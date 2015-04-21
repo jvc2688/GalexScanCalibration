@@ -6,10 +6,9 @@ import matplotlib.cm as cm
 import gc
 import h5py
 from astropy.io import fits as pyfits
-import pos_range
 
 if __name__ == '__main__':
-  initial_sec = 300
+  initial_sec = 500
   hdulist = pyfits.open('../data/AIS_GAL_SCAN_00005_0001-asprta.fits')
   co_data = hdulist[1].data
   intitial_asp = co_data[initial_sec]

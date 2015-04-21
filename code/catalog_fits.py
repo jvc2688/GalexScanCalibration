@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import gc
 from astropy.io import fits as pyfits
-import astropy.coordinates.distances as dis
+import astropy.coordinates as pycoo
 
 def get_catalog(skypos, angle):
-	center = dis.spherical_to_cartesian(1, skypos[1]*np.pi/180., skypos[0]*np.pi/180.)
+	center = pycoo.spherical_to_cartesian(1, skypos[1]*np.pi/180., skypos[0]*np.pi/180.)
 	rad = np.cos(angle*np.pi/180.)
 	print(center, rad)
 	#load catalog
@@ -21,7 +21,7 @@ def get_catalog(skypos, angle):
 	stars[:,1] = data['dec']
 	stars_rad = stars*np.pi/180.
 	#convert (ra, dec) to (x, y, z)
-	X, Y, Z = dis.spherical_to_cartesian(1, stars_rad[:,1], stars_rad[:,0])
+	X, Y, Z = pycoo.spherical_to_cartesian(1, stars_rad[:,1], stars_rad[:,0])
   	stars_car = np.array([X,Y,Z], dtype='float64').T
 
   	sep = np.dot(stars_car, center)

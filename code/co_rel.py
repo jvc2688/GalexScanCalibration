@@ -7,9 +7,8 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import gc
 from astropy.io import fits as pyfits
-import pos_range
 import catalog_fits
-import astropy.coordinates.distances as dis
+import astropy.coordinates as pycoo
 
 
 def get_corr_map(coo1, coo2, skypos, skyrange):
@@ -78,12 +77,12 @@ def get_data(tranges):
   return data
 
 def angle_filter(data, skypos, angle):
-  center = dis.spherical_to_cartesian(1, skypos[1]*np.pi/180., skypos[0]*np.pi/180.)
+  center = pycoo.spherical_to_cartesian(1, skypos[1]*np.pi/180., skypos[0]*np.pi/180.)
   rad = np.cos(angle*np.pi/180.)
   print(center, rad)
 
   data_rad = data*np.pi/180.
-  X, Y, Z = dis.spherical_to_cartesian(1, data_rad[:,1], data_rad[:,0])
+  X, Y, Z = pycoo.spherical_to_cartesian(1, data_rad[:,1], data_rad[:,0])
   data_car = np.array([X,Y,Z], dtype='float64').T
 
   sep = np.dot(data_car, center)
