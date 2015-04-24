@@ -23,7 +23,7 @@ def get_corr_map(coo1, coo2, skypos, skyrange):
   if len2>len1:
     for i in range(len2):
       print(i)
-      co_rel = np.concatenate((co_rel, np.roll(coo2, i)[0:len1,:]-coo1), axis = 0)
+      co_rel = np.concatenate((co_rel, np.roll(coo2, i, axis=0)[0:len1,:]-coo1), axis = 0)
       if (i+1)%200 == 0:
         foc = wcs.sip_pix2foc(wcs.wcs_world2pix(co_rel[1:],1),1)
         H,xedges,yedges=np.histogram2d(foc[:,1]-0.5, foc[:,0]-0.5,\
@@ -33,7 +33,7 @@ def get_corr_map(coo1, coo2, skypos, skyrange):
   else:
     for i in range(len1):
       print(i)
-      co_rel = np.concatenate((co_rel, coo2-np.roll(coo1, i)[0:len2,:]), axis = 0)
+      co_rel = np.concatenate((co_rel, coo2-np.roll(coo1, i, axis=0)[0:len2,:]), axis = 0)
       if (i+1)%200 == 0:
         foc = wcs.sip_pix2foc(wcs.wcs_world2pix(co_rel[1:],1),1)
         H,xedges,yedges=np.histogram2d(foc[:,1]-0.5, foc[:,0]-0.5,\
