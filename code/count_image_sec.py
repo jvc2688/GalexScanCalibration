@@ -9,7 +9,7 @@ from astropy.io import fits as pyfits
 import math
 
 def cal_photon(offsets, initial, time, row):
-  index = int(math.floor((time-initial_time)/1000.-1))
+  index = int(math.floor((time-initial)/1000.-1))
   row = np.array(row, dtype='float64')
   row[-3:-1] += offsets[index]
   print initial, time, index
