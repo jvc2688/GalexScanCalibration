@@ -60,13 +60,16 @@ def MAD(a, axis=None):
 
 def find_centroid(data):
   source = extract(data , 0)
-  fwhm = np.sqrt(source[0][12]*source[0][13])
+  a = source['a']
+  b = source['b']
+  fwhm = np.sqrt(np.max(a)*np.max(b))
+  print fwhm
   size = data.shape[0]
   zero = size/2 + .5
   kernel = makeGaussian(17, fwhm , 0 , np.array([8.5,8.5]))
   img = signal.convolve2d(data , kernel , mode = "same")
   xi, yi = np.unravel_index(np.argmax(img), img.shape)
-    
+  
   if (xi >= 1 and xi < img.shape[0] - 1 and yi >= 1 and yi < img.shape[1] - 1):
       ox, oy = fit_3x3(img[xi-1:xi+2, yi-1:yi+2])
   else:
