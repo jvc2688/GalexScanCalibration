@@ -16,11 +16,11 @@ def load_data(filename):
 		csvfile.close()
 	return data
 
-def find_centroid(data, bandwidth=0.001, iter_num=5):
+def find_centroid(data, bandwidth=0.003, iter_num=6, halfwidth=0.02):
 	kde = KernelDensity(kernel='gaussian', bandwidth=bandwidth).fit(data)
 	grid = 10
 	position = np.array([0,0])
-	halfwidth = 0.008
+	#halfwidth = 0.02
 	for i in range(iter_num):
 		low = position-halfwidth
 		high = position+halfwidth
