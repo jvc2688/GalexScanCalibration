@@ -3,7 +3,7 @@ import aplpy
 
 if __name__ == '__main__':
 	i = 560
-	filename = '../fits/co/co_map%d_%d_zoom_large.fits'%(i, i+1)
+	filename = '../fits/co/co_map%d_%d_zoom_nocal.fits'%(i, i+1)
 	centroid = centroid_plot.find_centroid(filename)
 	print centroid
 	fig = aplpy.FITSFigure(filename)
