@@ -32,8 +32,36 @@ def define_wcs(skypos,skyrange,width=False,height=False,verbose=0,
 	"""Define the world coordinate system (WCS)."""
 	wcs = pywcs.WCS(naxis=2) # NAXIS = 2
 	imsz = deg2pix(skypos,skyrange, pixsz)#, 0.002)
-	wcs.wcs.cdelt = np.array([-pixsz,pixsz])
+	wcs.wcs.cdelt = np.array([-pixsz,pixsz])#wcs.wcs.cdelt = np.array([-pixsz,pixsz])
 	wcs.wcs.ctype = ['RA---TAN','DEC--TAN']
+	wcs.wcs.crpix = [(imsz[1]/2.)+0.5,(imsz[0]/2.)+0.5]
+	wcs.wcs.crval = skypos
+	return wcs
+
+def deg2pix_g(skypos,skyrange,pixsz=0.000416666666666667):
+	"""Converts degrees to GALEX pixels rounded up to the nearest pixel
+	so that the number of degrees specified will fully fit into the frame.
+	"""
+    
+	wcs = pywcs.WCS(naxis=2) # NAXIS = 2
+	wcs.wcs.cdelt = [pixsz,pixsz]
+	wcs.wcs.ctype = ['GLON-TAN','GLAT-TAN']
+	# Set the reference pixel to [0,0] (which is actually the default)
+	wcs.wcs.crpix = [0.,0.]
+	# Fix the lower bound [RA, Dec] to the reference pixel
+	wcs.wcs.crval = [skypos[0]-skyrange[0]/2.,skypos[1]-skyrange[1]/2.]
+	# Find the pixel position of the upper bound [RA,Dec]
+	coo = [skypos[0]+skyrange[0]/2.,skypos[1]+skyrange[1]/2.]
+	
+	return np.abs(np.floor(wcs.sip_pix2foc(wcs.wcs_world2pix([coo],1),1)[0]))[::-1]
+
+def define_wcs_g(skypos,skyrange,width=False,height=False,verbose=0,
+               pixsz=0.002):
+	"""Define the world coordinate system (WCS)."""
+	wcs = pywcs.WCS(naxis=2) # NAXIS = 2
+	imsz = deg2pix_g(skypos,skyrange, pixsz)#, 0.002)
+	wcs.wcs.cdelt = np.array([-pixsz,pixsz])#wcs.wcs.cdelt = np.array([-pixsz,pixsz])
+	wcs.wcs.ctype = ['GLON-TAN','GLAT-TAN']
 	wcs.wcs.crpix = [(imsz[1]/2.)+0.5,(imsz[0]/2.)+0.5]
 	wcs.wcs.crval = skypos
 	return wcs
