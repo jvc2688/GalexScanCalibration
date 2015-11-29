@@ -24,7 +24,7 @@ def find_centroid(data, bandwidth=0.003, iter_num=6, halfwidth=0.02):
 	for i in range(iter_num):
 		low = position-halfwidth
 		high = position+halfwidth
-		X, Y = np.mgrid[low[0]:high[0]:10j, low[1]:high[1]:10j]
+		X, Y = np.mgrid[low[0]:high[0]:20j, low[1]:high[1]:20j]
 		positions = np.vstack([X.ravel(), Y.ravel()]).T
 		img = kde.score_samples(positions)
 		position = positions[np.argmax(img)]
