@@ -285,6 +285,159 @@ def run_flat_chunks(pid, file_name, imsz, cata_list, csv_list, return_dict):
   trange[1] = time
   return_dict[pid] = (count, trange)
 
+
+def run_flat_multichunks(pid, file_name, imsz, cata_list, csvs, chunk_num, return_dict):
+  #star_num = len(count_list)
+  tranges = []
+  counts = []
+
+  cata_list[:,1:3] = cata_list[:,1:3]*np.pi/180.
+  X, Y, Z = pycoo.spherical_to_cartesian(1, cata_list[:,2], cata_list[:,1])
+  cata_car = np.array([X,Y,Z], dtype='float64').T
+  aperture_size = 8./60./60.
+  rad = np.cos(aperture_size*np.pi/180.)
+  annulus = np.cos([9./60./60.*np.pi/180., 11./60./60.*np.pi/180.])
+
+  hdulist = pyfits.open('../AIS_GAL_SCAN/asprta/%s-asprta.fits'%file_name)
+  offsets = np.load('../data/%s/cata/offsets1_10_new.npy'%file_name)
+
+  co_data = hdulist[1].data
+  initial = int((co_data[1][0]-0.5)*1000)
+
+  step = 10
+
+
+  chunks = split_seq(csvs, chunk_num)
+
+  for csv_list in chunks:
+    count = np.zeros(imsz)
+    trange = [0,0]
+    with open(csv_list[0], 'rb') as file:
+      reader = csv.reader(file)
+      trange[0] = int(reader.next()[0])
+
+    time = 0
+    for csv_file in csv_list:
+      with open(csv_file, 'rb') as file:
+        reader = csv.reader(file)
+        data = []
+        i = 1
+        id = np.array([1,0,0,0,0,0,1,1,0,0,0])>0
+        for row in reader:
+          time = int(row[0])
+
+          row = cal_photon_r(offsets, initial, time, row, step)
+          #add row into data
+          #data.append(row[id])
+          center = pycoo.spherical_to_cartesian(1, row[9]*np.pi/180., row[8]*np.pi/180.)
+          sep = np.dot(cata_car, center)
+          coo = cata_list[sep>=rad,:]
+          #ann_coo = cata_list[np.logical_and(sep>=annulus[1], sep<=annulus[0]),:]
+          if len(coo)>0:
+            data.append(row[id])
+
+          '''
+          for photon in coo:
+            with open('../data/%s/star/extra/star_%d-%d.csv'%(file_name, photon[0], pid), 'ab') as star_csv:
+              writer = csv.writer(star_csv)
+              writer.writerow(row)
+            star_csv.close()
+          '''
+          '''
+          for photon in ann_coo:
+            with open('../data/%s/star/extra/star_bkg_%d-%d.csv'%(file_name, photon[0], pid), 'ab') as star_bkg_csv:
+              writer = csv.writer(star_bkg_csv)
+              writer.writerow(row)
+            star_bkg_csv.close()
+          '''
+
+          #hist the data
+          if i%200000 == 0:
+            H = hist_flat(data, imsz)
+            count += H
+            data=H = None
+            data = []
+            gc.collect()
+            print i
+          i+=1
+        #hist the remaining data
+        if len(data)>0:
+          H = hist_flat(data, imsz)
+          count += H
+    trange[1] = time
+    tranges.append(trange)
+    counts.append(count)
+  return_dict[pid] = (counts, tranges)
+
+def run_flat_multichunks_black(pid, file_name, imsz, cata_lists, aperture_list, csvs, chunk_num, return_dict):
+  #star_num = len(count_list)
+  tranges = []
+  counts = []
+  cata_car_list = []
+  for cata in cata_lists:
+    cata[:,1:3] = cata[:,1:3]*np.pi/180.
+    X, Y, Z = pycoo.spherical_to_cartesian(1, cata[:,2], cata[:,1])
+    cata_car = np.array([X,Y,Z], dtype='float64').T
+    cata_car_list.append(cata_car)
+  aperture_list_rad = np.cos(np.array(aperture_list)*np.pi/180.)
+
+  hdulist = pyfits.open('../AIS_GAL_SCAN/asprta/%s-asprta.fits'%file_name)
+  offsets = np.load('../data/%s/cata/offsets1_10_new.npy'%file_name)
+
+  co_data = hdulist[1].data
+  initial = int((co_data[1][0]-0.5)*1000)
+
+  step = 10
+
+  chunks = split_seq(csvs, chunk_num)
+
+  for csv_list in chunks:
+    count = np.zeros(imsz)
+    trange = [0,0]
+    with open(csv_list[0], 'rb') as file:
+      reader = csv.reader(file)
+      trange[0] = int(reader.next()[0])
+
+    time = 0
+    for csv_file in csv_list:
+      with open(csv_file, 'rb') as file:
+        reader = csv.reader(file)
+        data = []
+        i = 1
+        id = np.array([1,0,0,0,0,0,1,1,0,0,0])>0
+        for row in reader:
+          time = int(row[0])
+
+          row = cal_photon_r(offsets, initial, time, row, step)
+          center = pycoo.spherical_to_cartesian(1, row[9]*np.pi/180., row[8]*np.pi/180.)
+          in_num = 0
+          for list_num in range(3):
+            aperture_rad = aperture_list_rad[list_num]
+            cata_car = cata_car_list[list_num]
+            sep = np.dot(cata_car, center)
+            coo = cata_car[sep>=aperture_rad,:]
+            in_num += len(coo)
+          if in_num==0:
+            data.append(row[id])
+
+          #hist the data
+          if i%200000 == 0:
+            H = hist_flat(data, imsz)
+            count += H
+            data=H = None
+            data = []
+            gc.collect()
+            print i
+          i+=1
+        #hist the remaining data
+        if len(data)>0:
+          H = hist_flat(data, imsz)
+          count += H
+    trange[1] = time
+    tranges.append(trange)
+    counts.append(count)
+  return_dict[pid] = (counts, tranges)
+
 if __name__ == '__main__':
 
   if False:
@@ -429,12 +582,12 @@ if __name__ == '__main__':
     hdulist.writeto('../fits/%s/extra/flat.fits'%(name), clobber=False)
 
 #flat field---star photons, chunks
-  if True:
+  if False:
     name = sys.argv[1]
     #name = 'AIS_GAL_SCAN_00014_0001'
     print name
 
-    output = '../fits/%s/extra/new/flat.fits'%(name)
+    output = '../fits/%s/extra/new_fine/flat.fits'%(name)
     dir = os.path.dirname(output)
     if not os.path.exists(dir):
       os.makedirs(dir)
@@ -490,8 +643,155 @@ if __name__ == '__main__':
       hdu = pyfits.PrimaryHDU(count)
       hdu.header = flat[0].header
       hdulist = pyfits.HDUList([hdu])
-      hdulist.writeto('../fits/%s/extra/new/flat%d.fits'%(name, i), clobber=False)
+      hdulist.writeto('../fits/%s/extra/new_fine/flat%d.fits'%(name, i), clobber=False)
       tranges.append(trange)
 
-    np.save('../fits/%s/extra/new/tranges.npy'%name, tranges)
+    np.save('../fits/%s/extra/new_fine/tranges.npy'%name, tranges)
+
+#flat field---star photons, multi-chunks
+  if False:
+    name = sys.argv[1]
+    #name = 'AIS_GAL_SCAN_00014_0001'
+    print name
+
+    output = '../fits/%s/extra/new_faint/flat.fits'%(name)
+    dir = os.path.dirname(output)
+    if not os.path.exists(dir):
+      os.makedirs(dir)
+    else:
+      print 'exists'
+
+    cata = spi.load_obj('../data/%s_starset_extra_all_star'%name)
+    cata_a = np.array(list(cata))
+    #cata_a = cata_a[np.logical_and(cata_a[:,4]>15.5,cata_a[:,4]<17.5)]
+    cata_a = cata_a[np.logical_and(cata_a[:,4]>16.0,cata_a[:,4]<18.0)]
+    cata_len = len(cata_a)
+    print cata_len
+    cata_list = np.insert(cata_a, 0, np.arange(cata_len), axis=1)
+
+    imsz = [800, 800]
+    count = np.zeros(imsz)
+    pixsz = 0.0016666667
+
+    step = 10
+    tranges = []
+
+    hdulist = pyfits.open('../AIS_GAL_SCAN/asprta/%s-asprta.fits'%name)
+    co_data = hdulist[1].data
+    offsets = np.load('../data/%s/cata/offsets1_10_new.npy'%name)
+    initial = int((co_data[1][0]-0.5)*1000)
+
+    csvs = glob.glob("../data/%s/split/*.csv"%name)
+
+    total_p_num = 20
+    manager = Manager()
+    return_dict = manager.dict()
+    p_list = []
+
+    pid = 0
+    multi_num = 16
+    csvs = sorted(csvs, key=get_key)
+    chunks = split_seq(csvs, total_p_num)
+    for chunk in chunks:
+      print len(chunk)
+      p = Process(target=run_flat_multichunks, args=(pid, name, imsz, cata_list, chunk, multi_num, return_dict))
+      p.start()
+      p_list.append(p)
+      pid += 1
+    print pid
+
+    for p in p_list:
+      p.join()
+    print 'all done'
+    
+    flat = pyfits.open('../data/cal/NUV_flat.fits')
+    tranges = []
+    for i in range(0, pid):
+      counts, tmp_tranges = return_dict[i]
+      j = 0
+      for count in counts:
+        hdu = pyfits.PrimaryHDU(count)
+        hdu.header = flat[0].header
+        hdulist = pyfits.HDUList([hdu])
+        hdulist.writeto('../fits/%s/extra/new_faint/flat%d.fits'%(name, i*multi_num+j), clobber=False)
+        j += 1
+      tranges += tmp_tranges
+
+    np.save('../fits/%s/extra/new_faint/tranges.npy'%name, tranges)
+
+#flat field---star photons, multi-chunks, black list
+  if True:
+    name = sys.argv[1]
+    #name = 'AIS_GAL_SCAN_00014_0001'
+    print name
+    output = '../fits/%s/extra/new_black/'%(name)
+    dir = os.path.dirname(output)
+    if not os.path.exists(dir):
+      os.makedirs(dir)
+    else:
+      print 'exists'
+
+    cata = spi.load_obj('../data/%s_starset_extra_all_star'%name)
+    cata_a = np.array(list(cata))
+    #cata_a = cata_a[np.logical_and(cata_a[:,4]>15.5,cata_a[:,4]<17.5)]
+    #cata_a = cata_a[np.logical_and(cata_a[:,4]>16.0,cata_a[:,4]<18.0)]
+    mask_faint = cata_a[:,3]<40
+    mask_mid = np.logical_and(cata_a[:,3]>=40, cata_a[:,3]<120)
+    mask_bright = np.logical_and(cata_a[:,3]>=120, cata_a[:,3]<250)
+    mask_ultra = cata_a[:,3]>=250
+    mask_list = [mask_mid, mask_bright, mask_ultra]
+    size_list = [[-3,-2,-1,0,1,2,3],[-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9], 
+                [-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]]
+    aperture_list = [21.0/60./60., 57.0/60./60., 87.0/60./60.]
+    cata_len = len(cata_a)
+    print cata_len
+    cata_list = np.insert(cata_a, 0, np.arange(cata_len), axis=1)
+    cata_lists = []
+    for mask in mask_list:
+      cata_lists.append(cata_list[mask])
+
+    imsz = [800, 800]
+    count = np.zeros(imsz)
+    pixsz = 0.0016666667
+
+    step = 10
+    tranges = []
+
+    hdulist = pyfits.open('../AIS_GAL_SCAN/asprta/%s-asprta.fits'%name)
+    co_data = hdulist[1].data
+    offsets = np.load('../data/%s/cata/offsets1_10_new.npy'%name)
+    initial = int((co_data[1][0]-0.5)*1000)
+
+    csvs = glob.glob("../data/%s/split/*.csv"%name)
+
+    total_p_num = 20
+    manager = Manager()
+    return_dict = manager.dict()
+    p_list = []
+
+    pid = 0
+    multi_num = 64
+    csvs = sorted(csvs, key=get_key)
+    chunks = split_seq(csvs, total_p_num)
+    for chunk in chunks:
+      print len(chunk)
+      p = Process(target=run_flat_multichunks_black, args=(pid, name, imsz, cata_lists, aperture_list, chunk, multi_num, return_dict))
+      p.start()
+      p_list.append(p)
+      pid += 1
+    print pid
+
+    for p in p_list:
+      p.join()
+    print 'all done'
+    
+    flat = pyfits.open('../data/cal/NUV_flat.fits')
+    tranges = []
+    count_list = []
+    for i in range(0, pid):
+      counts, tmp_tranges = return_dict[i]
+      count_list += counts
+      tranges += tmp_tranges
+    np.save('%scount_list.npy'%output, count_list)
+    np.save('%stranges.npy'%output, tranges)
 
