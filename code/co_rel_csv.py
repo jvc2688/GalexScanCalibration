@@ -40,15 +40,6 @@ def get_corr_map(coo1, coo2, skypos, skyrange, sec, bound, bandwidth):
       tmp_co = tmp_co[np.absolute(tmp_co[:,0])<=bound,:]
       tmp_co = tmp_co[np.absolute(tmp_co[:,1])<=bound,:]
       co_rel = np.concatenate((co_rel, tmp_co), axis = 0)
-      '''
-      if (i+1)%200 == 0:
-        writer.writerows(co_rel[1:])
-        foc = wcs.sip_pix2foc(wcs.wcs_world2pix(co_rel[1:],1),1)
-        H,xedges,yedges=np.histogram2d(foc[:,1]-0.5, foc[:,0]-0.5,\
-                                   bins=imsz, range=([ [0,imsz[0]],[0,imsz[1]] ]))
-        count += H
-        co_rel = np.array([[0, 0]])
-      '''
   else:
     for i in range(len1):
       #print(i)
@@ -56,24 +47,6 @@ def get_corr_map(coo1, coo2, skypos, skyrange, sec, bound, bandwidth):
       tmp_co = tmp_co[np.absolute(tmp_co[:,0])<=bound,:]
       tmp_co = tmp_co[np.absolute(tmp_co[:,1])<=bound,:]
       co_rel = np.concatenate((co_rel, tmp_co), axis = 0)
-      '''
-      if (i+1)%200 == 0:
-        writer.writerows(co_rel[1:])
-        foc = wcs.sip_pix2foc(wcs.wcs_world2pix(co_rel[1:],1),1)
-        H,xedges,yedges=np.histogram2d(foc[:,1]-0.5, foc[:,0]-0.5,\
-                                   bins=imsz, range=([ [0,imsz[0]],[0,imsz[1]] ]))
-        count += H
-        co_rel = np.array([[0, 0]])
-      '''
-  '''
-  if co_rel.shape[0]>1:
-    #writer.writerows(co_rel[1:])
-    foc = wcs.sip_pix2foc(wcs.wcs_world2pix(co_rel[1:],1),1)
-    H,xedges,yedges=np.histogram2d(foc[:,1]-0.5, foc[:,0]-0.5,\
-                               bins=imsz, range=([ [0,imsz[0]],[0,imsz[1]] ]))
-    count += H
-  #csvfile.close()
-  '''
   print co_rel.shape
   if co_rel.shape[0]>50:
     centroid = ck.find_centroid(co_rel[1:], bandwidth, 11, bound)
@@ -101,15 +74,6 @@ def get_corr_map_o(coo1, coo2, skypos, skyrange, sec, bound, bandwidth):
       tmp_co = tmp_co[np.absolute(tmp_co[:,0])<=bound,:]
       tmp_co = tmp_co[np.absolute(tmp_co[:,1])<=bound,:]
       co_rel = np.concatenate((co_rel, tmp_co), axis = 0)
-      '''
-      if (i+1)%200 == 0:
-        writer.writerows(co_rel[1:])
-        foc = wcs.sip_pix2foc(wcs.wcs_world2pix(co_rel[1:],1),1)
-        H,xedges,yedges=np.histogram2d(foc[:,1]-0.5, foc[:,0]-0.5,\
-                                   bins=imsz, range=([ [0,imsz[0]],[0,imsz[1]] ]))
-        count += H
-        co_rel = np.array([[0, 0]])
-      '''
   else:
     for i in range(len1):
       #print(i)
@@ -117,24 +81,7 @@ def get_corr_map_o(coo1, coo2, skypos, skyrange, sec, bound, bandwidth):
       tmp_co = tmp_co[np.absolute(tmp_co[:,0])<=bound,:]
       tmp_co = tmp_co[np.absolute(tmp_co[:,1])<=bound,:]
       co_rel = np.concatenate((co_rel, tmp_co), axis = 0)
-      '''
-      if (i+1)%200 == 0:
-        writer.writerows(co_rel[1:])
-        foc = wcs.sip_pix2foc(wcs.wcs_world2pix(co_rel[1:],1),1)
-        H,xedges,yedges=np.histogram2d(foc[:,1]-0.5, foc[:,0]-0.5,\
-                                   bins=imsz, range=([ [0,imsz[0]],[0,imsz[1]] ]))
-        count += H
-        co_rel = np.array([[0, 0]])
-      '''
-  '''
-  if co_rel.shape[0]>1:
-    #writer.writerows(co_rel[1:])
-    foc = wcs.sip_pix2foc(wcs.wcs_world2pix(co_rel[1:],1),1)
-    H,xedges,yedges=np.histogram2d(foc[:,1]-0.5, foc[:,0]-0.5,\
-                               bins=imsz, range=([ [0,imsz[0]],[0,imsz[1]] ]))
-    count += H
-  #csvfile.close()
-  '''
+
   print co_rel.shape
   if co_rel.shape[0]>50:
     centroid = ck.find_centroid(co_rel[1:], bandwidth, 11, bound)
@@ -372,7 +319,7 @@ def run_one(pid, scan_name, step, return_dict):
       print centroids
       np.save('../data/%s/cata/centroids%d.npy'%(scan_name, initial_sec), centroids)
 
-def run_one_r(pid, scan_name, step, start, end, return_dict):
+def run_one_r(pid, scan_name, step, start, end, limit, bandwidth, return_dict):
 
     num_co = int(1/step)
 
@@ -425,13 +372,13 @@ def run_one_r(pid, scan_name, step, start, end, return_dict):
         coo1 = angle_filter(coo1, center, 1.)
         coo2 = angle_filter(coo2, center, 1.)
 
-        count, centroid = get_corr_map(coo2, coo1, skypos, skyrange, sec, 0.15, 0.008)  
+        count, centroid = get_corr_map(coo2, coo1, skypos, skyrange, sec, limit, bandwidth)  
         centroids.append(centroid)
         print centroid
       print centroids
       np.save('../data/%s/cata/centroids%d_half.npy'%(scan_name, initial_sec), centroids)
 
-def run_one_r_sec(pid, scan_name, step, start, end, return_dict):
+def run_one_r_sec(pid, scan_name, step, start, end, limit, bandwidth, return_dict):
 
     num_co = int(1/step)
 
@@ -487,7 +434,7 @@ def run_one_r_sec(pid, scan_name, step, start, end, return_dict):
         coo1 = angle_filter(coo1, center, 1.)
         coo2 = angle_filter(coo2, center, 1.)
 
-        count, centroid = get_corr_map(coo2, coo1, skypos, skyrange, sec, 0.05, 0.004)  
+        count, centroid = get_corr_map(coo2, coo1, skypos, skyrange, sec, limit, bandwidth)  
         centroids.append(centroid)
         print centroid
       print centroids
@@ -1016,7 +963,9 @@ if __name__ == '__main__':
     hdulist = pyfits.open('../AIS_GAL_SCAN/asprta/%s-asprta.fits'%name)
     co_data = hdulist[1].data
     length = co_data.shape[0]
-    
+    limit = 0.2
+    bandwidth = 0.008
+
     p_num = 11
     chunk_len = int(length/p_num)
 
@@ -1027,14 +976,14 @@ if __name__ == '__main__':
     for pid in range(p_num-1):
       start = pid*chunk_len
       end = (pid+1)*chunk_len
-      p = Process(target=run_one_r, args=(pid, name, 0.5, start, end, return_dict))
+      p = Process(target=run_one_r, args=(pid, name, 0.5, start, end, limit, bandwidth, return_dict))
       p.start()
       p_list.append(p)
 
     pid = p_num-1
     start = pid*chunk_len
     end = length
-    p = Process(target=run_one_r, args=(pid, name, 0.5, start, end, return_dict))
+    p = Process(target=run_one_r, args=(pid, name, 0.5, start, end, limit, bandwidth, return_dict))
     p.start()
     p_list.append(p)
 
@@ -1050,6 +999,8 @@ if __name__ == '__main__':
     hdulist = pyfits.open('../AIS_GAL_SCAN/asprta/%s-asprta.fits'%name)
     co_data = hdulist[1].data
     length = co_data.shape[0]
+    limit = 0.05
+    bandwidth = 0.0015
     
     p_num = 11
     chunk_len = int(length/p_num)
@@ -1061,14 +1012,14 @@ if __name__ == '__main__':
     for pid in range(p_num-1):
       start = pid*chunk_len
       end = (pid+1)*chunk_len
-      p = Process(target=run_one_r_sec, args=(pid, name, 1., start, end, return_dict))
+      p = Process(target=run_one_r_sec, args=(pid, name, 1., start, end, limit, bandwidth, return_dict))
       p.start()
       p_list.append(p)
 
     pid = p_num-1
     start = pid*chunk_len
     end = length
-    p = Process(target=run_one_r_sec, args=(pid, name, 1., start, end, return_dict))
+    p = Process(target=run_one_r_sec, args=(pid, name, 1., start, end, limit, bandwidth, return_dict))
     p.start()
     p_list.append(p)
 
