@@ -383,19 +383,135 @@ if __name__ == '__main__':
 			plt.savefig('../fits/flat/chunk/%s/downsample_%d/star_ratio_%d.png'%(dirname, size, size), dpi=190)
 			plt.clf()
 
-	if True:
+	if False:
 		star_flats = []
+		bkg_flats = [] 
 		size=100
 		for i in range(9):
 			dirname = 'black_f8_%d'%i
 			star_flats.append(pyfits.open('../fits/flat/chunk/%s/downsample_%d/NUV_flat_try_full_%d_nocon_new.fits'%(dirname, size, size))[0].data)
+			bkg_flats.append(pyfits.open('../fits/flat/chunk/%s/downsample_%d/bkg_flat.fits'%(dirname, size))[0].data)
 
+		m_flat = np.median(star_flats, axis=0)
+		print m_flat.shape
+		dev = np.square(star_flats-m_flat)
+		m_dev = np.mean(dev, axis=0)
+
+
+		m_flat_bkg = np.median(bkg_flats, axis=0)
+		dev_bkg = np.square(bkg_flats-m_flat_bkg)
+		m_dev_bkg = np.mean(dev_bkg, axis=0)
+
+		plt.imshow(m_dev, origin='lower', interpolation='none')
+		plt.set_cmap('gray')
+		plt.colorbar()
+		plt.savefig('../plots/flat/var_map100.png', dpi=190)
+		plt.show()
+
+		plt.imshow(m_flat, origin='lower', interpolation='none')
+		plt.set_cmap('gray')
+		plt.colorbar()
+		plt.savefig('../plots/flat/median_flat100.png', dpi=190)
+		plt.show()
+
+		plt.imshow(m_dev_bkg, origin='lower', interpolation='none')
+		plt.set_cmap('gray')
+		plt.colorbar()
+		plt.savefig('../plots/flat/var_map_bkg100.png', dpi=190)
+		plt.show()
+
+		plt.imshow(m_flat_bkg, origin='lower', interpolation='none')
+		plt.set_cmap('gray')
+		plt.colorbar()
+		plt.savefig('../plots/flat/median_bkg_flat100.png', dpi=190)
+		plt.show()
+
+
+	if True:
+		star_flats = []
+		bkg_flats = [] 
+		star_medians = []
+		bkg_medians = []
+		size=100
+		margin = 25
+		for i in range(9):
+			dirname = 'black_f8_%d'%i
+			star_flats.append(pyfits.open('../fits/flat/chunk/%s/downsample_%d/NUV_flat_try_full_%d_nocon_new.fits'%(dirname, size, size))[0].data)
+			bkg_flats.append(pyfits.open('../fits/flat/chunk/%s/downsample_%d/bkg_flat.fits'%(dirname, size))[0].data)
+			star_medians.append(np.median(star_flats[i][margin:size-margin, margin:size-margin]))
+			bkg_medians.append(np.median(bkg_flats[i][margin:size-margin, margin:size-margin]))
+
+		star_median = np.median(star_medians)
+		bkg_median = 1.#np.median(bkg_medians)
+		print star_median
+		print bkg_median
+		for i in range(9):
+			star_flats[i] = star_flats[i]*star_median/star_medians[i]
+			bkg_flats[i] = bkg_flats[i]*bkg_median/bkg_medians[i]
+		
+		flat_max = np.max(star_flats)
+
+		'''
+		flat_max = np.max(star_flats)
+		f, ax = plt.subplots(9,9)
+		f.set_size_inches(12.9,12.9)
+		for i in range(9):
+			for j in range(i+1):
+				ax[i,j].plot(star_flats[i].flatten(), star_flats[j].flatten(), '.k')
+				ax[i,j].set_xlim(-0.1, flat_max)
+				ax[i,j].set_ylim(-0.1, flat_max)
+				if i<8:
+					plt.setp( ax[i,j].get_xticklabels(), visible=False)
+    			#if j>0:
+    			plt.setp( ax[i,j].get_yticklabels(), visible=False)
+		plt.tight_layout()
+		plt.subplots_adjust(wspace=0, hspace=0)
+		plt.savefig('../plots/flat/digplot.png', dpi=190)
+		plt.show()
+		'''
+		plt.figure(1, (9,9))
+		for i in range(9):
+			for j in range(i):
+				plt.plot(star_flats[i].flatten(), star_flats[j].flatten(), '.k')
+				plt.xlabel('flat %d'%i)
+				plt.ylabel('flat %d'%j)
+				plt.xlim(-0.1, flat_max)
+				plt.ylim(-0.1, flat_max)
+				plt.tight_layout()
+				plt.savefig('../plots/flat/flat_%d_%d.png'%(i,j), dpi=190)
+				plt.clf()
+		plt.plot(bkg_flats[0].flatten(), bkg_flats[1].flatten(), '.k')
+		plt.show()
 		m_flat = np.median(star_flats, axis=0)
 		print m_flat.shape
 		dev = np.square(star_flats-m_flat)
 		m_dev = np.median(dev, axis=0)
 
+		m_flat_bkg = np.median(bkg_flats, axis=0)
+		dev_bkg = np.square(bkg_flats-m_flat_bkg)
+		m_dev_bkg = np.mean(dev_bkg, axis=0)
+		dev_median = np.median(m_dev_bkg)
+
 		plt.imshow(m_dev, origin='lower', interpolation='none')
 		plt.set_cmap('gray')
 		plt.colorbar()
+		plt.savefig('../plots/flat/var_map_normal100.png', dpi=190)
+		#plt.show()
+
+		plt.imshow(m_flat, origin='lower', interpolation='none')
+		plt.set_cmap('gray')
+		plt.colorbar()
+		plt.savefig('../plots/flat/median_flat_normal100.png', dpi=190)
+		#plt.show()
+
+		plt.imshow(m_dev_bkg, origin='lower', interpolation='none', vmin=0.1*dev_median, vmax=10*dev_median)
+		plt.set_cmap('gray')
+		plt.colorbar()
+		#plt.savefig('../plots/flat/var_map_bkg100.png', dpi=190)
+		plt.show()
+
+		plt.imshow(m_flat_bkg, origin='lower', interpolation='none')
+		plt.set_cmap('gray')
+		plt.colorbar()
+		#plt.savefig('../plots/flat/median_bkg_flat100.png', dpi=190)
 		plt.show()

@@ -321,7 +321,7 @@ def run_one_r_sec(pid, scan_name, step, start, end, return_dict):
     cal_initial = int((co_data[1][0]-0.5)*1000)
     offsets = np.load('../data/%s/cata/offsets_inter_half_sec.npy'%scan_name)
 
-    angle_list = [-0.02, -0.01, -0.005, -0.0025, -0.00125, -0.00075, -0.02, 0, 0.01, 0.005, 0.0025, 0.00125, 0.00075]
+    angle_list = [-0.035, -0.03, -0.025, -0.02, -0.015, -0.01, -0.005, 0, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.035]
 
     print length
     for initial_sec in range(start, end):
@@ -441,8 +441,8 @@ if __name__ == '__main__':
       p_list.append(p)
 
     pid = p_num-1
-    start = pid*chunk_len+750
-    end = 950 #length
+    start = pid*chunk_len
+    end = length
     run_one_r_sec(pid, name, 1., start, end, return_dict)
     '''
     p = Process(target=run_one_r_sec, args=(pid, name, 1., start, end, return_dict))

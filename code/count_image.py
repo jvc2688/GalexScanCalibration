@@ -8,16 +8,20 @@ from astropy.io import fits as pyfits
 import pos_range
 import math
 
-def cal_photon(offsets, initial, time, row, step):
+def cal_photon(offsets, initial, time, row):
   if time<initial:
     return row
   else:
-    index = int(math.floor((time-initial)*step/1000.-1))
+    index = int(math.floor((time-initial)*2/1000.-1))
     row = np.array(row, dtype='float64')
     row[-3:-1] += offsets[index]
+    #print initial, time, index
     return row 
 
 if __name__ == '__main__':
+  skypos = [268.73293, -29.573102]
+  skyrange = [2., 2.]
+
   skypos, skyrange = pos_range.get_pos_range(name_list='../data/name_list')
   tranges = []
   trange = [0, 0]
@@ -29,8 +33,7 @@ if __name__ == '__main__':
   hdulist = pyfits.open('../data/AIS_GAL_SCAN_00005_0001-asprta.fits')
   co_data = hdulist[1].data
 
-  step = 10
-  offsets = np.load('../data/offsets300-799_10.npy')
+  offsets = np.load('../data/offsets300-899_half_r.npy')
   length = offsets.shape[0]
   for i in range(length-1):
     offsets[i+1] = offsets[i+1] + offsets[i]
@@ -42,14 +45,14 @@ if __name__ == '__main__':
     for csv_file in csv_list:
       with open(csv_file, 'rb') as file:
         reader = csv.reader(file)
-        with open('../data/NUVphotons_5_cal_10.csv', 'wb') as csvfile:
+        with open('../data/NUVphotons_5_cal_half.csv', 'wb') as csvfile:
           writer = csv.writer(csvfile)
           data = []
           i = 1
           trange[0] = float(reader.next()[0])/1000
           for row in reader:
             time = int(row[0])
-            row = cal_photon(offsets, initial, time, row, step)
+            row = cal_photon(offsets, initial, time, row)
             data.append(row)
             writer.writerow(row)
             if i%100000 == 0:
@@ -81,5 +84,5 @@ if __name__ == '__main__':
   hdu = pyfits.PrimaryHDU(count)
   hdu = imagetools.fits_header('NUV', skypos, tranges, skyrange, hdu=hdu, wcs=wcs)
   hdulist = pyfits.HDUList([hdu])
-  hdulist.writeto('../fits/count_map_5_cal_10_sep.fits', clobber=False)
+  hdulist.writeto('../fits/count_map_5_cal_half_sep.fits', clobber=False)
 

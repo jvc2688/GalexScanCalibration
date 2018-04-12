@@ -14,7 +14,7 @@ def load_obj(name ):
         return pickle.load(f)
 
 def get_star_pos(filename):
-	data = np.loadtxt(filename, skiprows=1)
+	data = np.loadtxt(filename, skiprows=4)
 	print(data)
 	length = data.shape[0]
 	stars = np.zeros((length,5))
@@ -46,12 +46,16 @@ def get_catalog(skypos, angle, stars_car, stars):
 
 
 if __name__ == '__main__':
-	scan_list = ['AIS_GAL_SCAN_00032_0001']#['AIS_GAL_SCAN_00149_0001', 'AIS_GAL_SCAN_00761_0001', 'AIS_GAL_SCAN_01049_0001']#['05','14','23','32','41','50','59','68']
+	scan_list = ['AIS_GAL_SCAN_02183_0002','AIS_GAL_SCAN_02183_0003','AIS_GAL_SCAN_02192_0002','AIS_GAL_SCAN_02201_0001','AIS_GAL_SCAN_02201_0002','AIS_GAL_SCAN_02201_0003','AIS_GAL_SCAN_02210_0002']#['AIS_GAL_SCAN_00149_0001', 'AIS_GAL_SCAN_00761_0001', 'AIS_GAL_SCAN_01049_0001']#['05','14','23','32','41','50','59','68']
+	name_file = 'name2147-2174'
+	with open('../name_new/%s'%name_file) as f:
+		scan_list = f.read().splitlines()
+	print(scan_list)
 	for scan_num in scan_list:
 
-		asp_solution = np.load('../data/photon_list/%s_asp_cal.npy'%scan_num)
+		asp_solution = np.load('../data/photon_list/%s_asp_cal_inter_half_sec.npy'%scan_num)
 
-		stars_car, star_pos = get_star_pos('../data/sextractor_gl0-7.txt')
+		stars_car, star_pos = get_star_pos('../data/sex_galex_matches_2147-2174_nofix.txt')
 
 		star_set = set([])
 		print(asp_solution.shape)
@@ -59,9 +63,10 @@ if __name__ == '__main__':
 			center = asp_solution[i,1:3]
 			#stars = set(clog.get_catalog_t(center, 0.69))
 			#stars = set(clog.get_catalog_t(center, 0.4))
-			stars = set(get_catalog(center, 0.4, stars_car, star_pos))
+			stars = set(get_catalog(center, 0.69, stars_car, star_pos))
 			star_set.update(stars)
-			print(i, len(star_set))
+			print(i, len(star_set), center, len(stars))
 		print(len(star_set))
-		save_obj(star_set, '%s_starset_extra_full'%scan_num)
+		save_obj(star_set, '%s_starset_match'%scan_num)
+		#save_obj(star_set, '%s_starset_extra_all_star'%scan_num)
 

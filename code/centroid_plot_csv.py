@@ -1,10 +1,10 @@
-#import matplotlib
-#matplotlib.use('Agg')
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 import c3
 from astropy.io import fits as pyfits
 import numpy as np
 from astropy import wcs as pywcs
-import matplotlib.pyplot as plt
 import sys
 import aplpy
 import os
@@ -12,6 +12,7 @@ from sklearn.neighbors import KernelDensity
 import csv
 import math
 import asp_cal
+import glob
 from astropy.coordinates import SkyCoord
 from astropy.coordinates import ICRS, Galactic, FK4, FK5
 from astropy.coordinates import Angle, Latitude, Longitude
@@ -212,9 +213,10 @@ def generate_first_offsets(name):
 	index = np.arange(centroids.shape[0])
 	centroids[outliers, 1] = np.interp(index[outliers], index[~outliers], centroids[~outliers,1])
 
+	'''
 	plt.plot(centroids[:,0], '.b')
 	plt.show()
-
+	'''
 	np.save('../data/%s/cata/offsets%d_10_new_half.npy'%(name, initial), centroids)
 
 	output = "../plots/%s/cata/output.csv"%(name)
@@ -224,6 +226,10 @@ def generate_first_offsets(name):
 
 	asp_cal.interpolate_offsets(name, 0.5, centroids)
 
+	tmp_files = glob.glob("../data/%s/cata/*_half.npy"%name)
+	print tmp_files
+	for tmp_file in tmp_files:
+		os.remove(tmp_file)
 
 def generate_sec_offsets(name):
 	print name
@@ -238,11 +244,17 @@ def generate_sec_offsets(name):
 
 	print centroids.shape
 	plt.plot(centroids[:,0], '.b')
-	plt.show()
+	plt.savefig('../plots/%s/cata/offsets_10_new_sec.pdf'%name, dpi=190)
+	plt.clf()
 
 	np.save('../data/%s/cata/offsets%d_10_new_sec.npy'%(name, initial), centroids)
 
 	asp_cal.secondary_cal(name)
+
+	tmp_files = glob.glob("../data/%s/cata/centroids_sec*"%name)
+	print tmp_files
+	for tmp_file in tmp_files:
+		os.remove(tmp_file)
 
 if __name__ == '__main__':
 	if False:

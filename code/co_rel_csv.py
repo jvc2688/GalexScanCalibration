@@ -1,8 +1,10 @@
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 import sys
 import csv
 import imagetools
 import numpy as np
-import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import gc
 from astropy.io import fits as pyfits
@@ -10,7 +12,6 @@ import catalog_fits
 import astropy.coordinates as pycoo
 import centroid_kde as ck
 import cPickle as pickle
-import catalog_fits
 import os
 from multiprocessing import Process
 from multiprocessing import Manager
@@ -40,10 +41,70 @@ def get_corr_map(coo1, coo2, skypos, skyrange, sec, bound, bandwidth):
       tmp_co = tmp_co[np.absolute(tmp_co[:,0])<=bound,:]
       tmp_co = tmp_co[np.absolute(tmp_co[:,1])<=bound,:]
       co_rel = np.concatenate((co_rel, tmp_co), axis = 0)
+      '''
+      if (i+1)%200 == 0:
+        writer.writerows(co_rel[1:])
+        foc = wcs.sip_pix2foc(wcs.wcs_world2pix(co_rel[1:],1),1)
+        H,xedges,yedges=np.histogram2d(foc[:,1]-0.5, foc[:,0]-0.5,\
+                                   bins=imsz, range=([ [0,imsz[0]],[0,imsz[1]] ]))
+        count += H
+        co_rel = np.array([[0, 0]])
+      '''
   else:
     for i in range(len1):
       #print(i)
       tmp_co = coo2-np.roll(coo1, i, axis=0)[0:len2,:]
+      tmp_co = tmp_co[np.absolute(tmp_co[:,0])<=bound,:]
+      tmp_co = tmp_co[np.absolute(tmp_co[:,1])<=bound,:]
+      co_rel = np.concatenate((co_rel, tmp_co), axis = 0)
+      '''
+      if (i+1)%200 == 0:
+        writer.writerows(co_rel[1:])
+        foc = wcs.sip_pix2foc(wcs.wcs_world2pix(co_rel[1:],1),1)
+        H,xedges,yedges=np.histogram2d(foc[:,1]-0.5, foc[:,0]-0.5,\
+                                   bins=imsz, range=([ [0,imsz[0]],[0,imsz[1]] ]))
+        count += H
+        co_rel = np.array([[0, 0]])
+      '''
+  '''
+  if co_rel.shape[0]>1:
+    #writer.writerows(co_rel[1:])
+    foc = wcs.sip_pix2foc(wcs.wcs_world2pix(co_rel[1:],1),1)
+    H,xedges,yedges=np.histogram2d(foc[:,1]-0.5, foc[:,0]-0.5,\
+                               bins=imsz, range=([ [0,imsz[0]],[0,imsz[1]] ]))
+    count += H
+  #csvfile.close()
+  '''
+  print co_rel.shape
+  if co_rel.shape[0]>50:
+    centroid = ck.find_centroid(co_rel[1:], bandwidth, 11, bound)
+  else:
+    return count, np.array([0.0, 0.0])
+
+  return count, centroid
+
+def get_corr_map_fast(coo1, coo2, skypos, skyrange, sec, bound, bandwidth):
+  imsz = imagetools.deg2pix(skypos, skyrange, 0.0001)
+  count = np.zeros(imsz)
+  print(imsz)
+  co_rel = np.array([[0,0]])
+  len1 = coo1.shape[0]
+  len2 = coo2.shape[0]
+  print(len1,len2)
+  wcs = imagetools.define_wcs(skypos,skyrange,width=False,height=False,verbose=0,pixsz=0.0001)
+  #with open('../data/try2_%d.csv'%sec, 'wb') as csvfile:
+    #writer = csv.writer(csvfile)
+  if len2>len1:
+    for i in range(len1):
+      #print(i)
+      tmp_co = coo2-coo1[i,:]
+      tmp_co = tmp_co[np.absolute(tmp_co[:,0])<=bound,:]
+      tmp_co = tmp_co[np.absolute(tmp_co[:,1])<=bound,:]
+      co_rel = np.concatenate((co_rel, tmp_co), axis = 0)
+  else:
+    for i in range(len2):
+      #print(i)
+      tmp_co = coo2[i,:]-coo1
       tmp_co = tmp_co[np.absolute(tmp_co[:,0])<=bound,:]
       tmp_co = tmp_co[np.absolute(tmp_co[:,1])<=bound,:]
       co_rel = np.concatenate((co_rel, tmp_co), axis = 0)
@@ -74,6 +135,15 @@ def get_corr_map_o(coo1, coo2, skypos, skyrange, sec, bound, bandwidth):
       tmp_co = tmp_co[np.absolute(tmp_co[:,0])<=bound,:]
       tmp_co = tmp_co[np.absolute(tmp_co[:,1])<=bound,:]
       co_rel = np.concatenate((co_rel, tmp_co), axis = 0)
+      '''
+      if (i+1)%200 == 0:
+        writer.writerows(co_rel[1:])
+        foc = wcs.sip_pix2foc(wcs.wcs_world2pix(co_rel[1:],1),1)
+        H,xedges,yedges=np.histogram2d(foc[:,1]-0.5, foc[:,0]-0.5,\
+                                   bins=imsz, range=([ [0,imsz[0]],[0,imsz[1]] ]))
+        count += H
+        co_rel = np.array([[0, 0]])
+      '''
   else:
     for i in range(len1):
       #print(i)
@@ -81,7 +151,24 @@ def get_corr_map_o(coo1, coo2, skypos, skyrange, sec, bound, bandwidth):
       tmp_co = tmp_co[np.absolute(tmp_co[:,0])<=bound,:]
       tmp_co = tmp_co[np.absolute(tmp_co[:,1])<=bound,:]
       co_rel = np.concatenate((co_rel, tmp_co), axis = 0)
-
+      '''
+      if (i+1)%200 == 0:
+        writer.writerows(co_rel[1:])
+        foc = wcs.sip_pix2foc(wcs.wcs_world2pix(co_rel[1:],1),1)
+        H,xedges,yedges=np.histogram2d(foc[:,1]-0.5, foc[:,0]-0.5,\
+                                   bins=imsz, range=([ [0,imsz[0]],[0,imsz[1]] ]))
+        count += H
+        co_rel = np.array([[0, 0]])
+      '''
+  '''
+  if co_rel.shape[0]>1:
+    #writer.writerows(co_rel[1:])
+    foc = wcs.sip_pix2foc(wcs.wcs_world2pix(co_rel[1:],1),1)
+    H,xedges,yedges=np.histogram2d(foc[:,1]-0.5, foc[:,0]-0.5,\
+                               bins=imsz, range=([ [0,imsz[0]],[0,imsz[1]] ]))
+    count += H
+  #csvfile.close()
+  '''
   print co_rel.shape
   if co_rel.shape[0]>50:
     centroid = ck.find_centroid(co_rel[1:], bandwidth, 11, bound)
@@ -89,8 +176,6 @@ def get_corr_map_o(coo1, coo2, skypos, skyrange, sec, bound, bandwidth):
     return count, np.array([0.0, 0.0]), 1
 
   return count, centroid, 0
-
-
 
 def get_corr_map_photon(coo1, coo2, skypos, skyrange, sec, bound, bandwidth):
   imsz = imagetools.deg2pix(skypos, skyrange, 0.0001)
@@ -319,7 +404,7 @@ def run_one(pid, scan_name, step, return_dict):
       print centroids
       np.save('../data/%s/cata/centroids%d.npy'%(scan_name, initial_sec), centroids)
 
-def run_one_r(pid, scan_name, step, start, end, limit, bandwidth, return_dict):
+def run_one_r(pid, scan_name, step, start, end, return_dict):
 
     num_co = int(1/step)
 
@@ -369,16 +454,16 @@ def run_one_r(pid, scan_name, step, start, end, limit, bandwidth, return_dict):
         coo1 = np.array(data[sec], dtype='float64')[:,-3:-1]
         coo2 = catalog_fits.get_catalog(center, 0.69)
 
-        coo1 = angle_filter(coo1, center, 1.)
-        coo2 = angle_filter(coo2, center, 1.)
+        coo1 = angle_filter(coo1, center, 0.4)
+        coo2 = angle_filter(coo2, center, 0.4)
 
-        count, centroid = get_corr_map(coo2, coo1, skypos, skyrange, sec, limit, bandwidth)  
+        count, centroid = get_corr_map_fast(coo2, coo1, skypos, skyrange, sec, 0.20, 0.008)  
         centroids.append(centroid)
         print centroid
       print centroids
       np.save('../data/%s/cata/centroids%d_half.npy'%(scan_name, initial_sec), centroids)
 
-def run_one_r_sec(pid, scan_name, step, start, end, limit, bandwidth, return_dict):
+def run_one_r_sec(pid, scan_name, step, start, end, return_dict):
 
     num_co = int(1/step)
 
@@ -434,7 +519,7 @@ def run_one_r_sec(pid, scan_name, step, start, end, limit, bandwidth, return_dic
         coo1 = angle_filter(coo1, center, 1.)
         coo2 = angle_filter(coo2, center, 1.)
 
-        count, centroid = get_corr_map(coo2, coo1, skypos, skyrange, sec, limit, bandwidth)  
+        count, centroid = get_corr_map(coo2, coo1, skypos, skyrange, sec, 0.05, 0.004)  
         centroids.append(centroid)
         print centroid
       print centroids
@@ -963,10 +1048,9 @@ if __name__ == '__main__':
     hdulist = pyfits.open('../AIS_GAL_SCAN/asprta/%s-asprta.fits'%name)
     co_data = hdulist[1].data
     length = co_data.shape[0]
-    limit = 0.2
-    bandwidth = 0.008
-
-    p_num = 11
+    
+    #p_num = 12
+    p_num = int(sys.argv[2])
     chunk_len = int(length/p_num)
 
     manager = Manager()
@@ -976,14 +1060,14 @@ if __name__ == '__main__':
     for pid in range(p_num-1):
       start = pid*chunk_len
       end = (pid+1)*chunk_len
-      p = Process(target=run_one_r, args=(pid, name, 0.5, start, end, limit, bandwidth, return_dict))
+      p = Process(target=run_one_r, args=(pid, name, 0.5, start, end, return_dict))
       p.start()
       p_list.append(p)
 
     pid = p_num-1
     start = pid*chunk_len
     end = length
-    p = Process(target=run_one_r, args=(pid, name, 0.5, start, end, limit, bandwidth, return_dict))
+    p = Process(target=run_one_r, args=(pid, name, 0.5, start, end, return_dict))
     p.start()
     p_list.append(p)
 
@@ -999,8 +1083,6 @@ if __name__ == '__main__':
     hdulist = pyfits.open('../AIS_GAL_SCAN/asprta/%s-asprta.fits'%name)
     co_data = hdulist[1].data
     length = co_data.shape[0]
-    limit = 0.05
-    bandwidth = 0.0015
     
     p_num = 11
     chunk_len = int(length/p_num)
@@ -1012,14 +1094,14 @@ if __name__ == '__main__':
     for pid in range(p_num-1):
       start = pid*chunk_len
       end = (pid+1)*chunk_len
-      p = Process(target=run_one_r_sec, args=(pid, name, 1., start, end, limit, bandwidth, return_dict))
+      p = Process(target=run_one_r_sec, args=(pid, name, 1., start, end, return_dict))
       p.start()
       p_list.append(p)
 
     pid = p_num-1
     start = pid*chunk_len
     end = length
-    p = Process(target=run_one_r_sec, args=(pid, name, 1., start, end, limit, bandwidth, return_dict))
+    p = Process(target=run_one_r_sec, args=(pid, name, 1., start, end, return_dict))
     p.start()
     p_list.append(p)
 

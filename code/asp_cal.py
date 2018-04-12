@@ -1,9 +1,9 @@
 import matplotlib
 matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 import csv
 import imagetools
 import numpy as np
-import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import gc
 from astropy.io import fits as pyfits
@@ -81,7 +81,7 @@ def interpolate_offsets(name, interval=0.5, offsets=None):
   print offsets.shape
 
   np.save('../data/%s/cata/offsets1_10_new_inter_half_fine.npy'%name, offsets)
-
+  '''
   f, axes = plt.subplots(2, 1, squeeze=False)
   axes[0,0].plot(offsets[:,0], '.b')
   axes[0,0].set_ylabel('RA')
@@ -90,7 +90,16 @@ def interpolate_offsets(name, interval=0.5, offsets=None):
   plt.setp(axes[0,0].get_xticklabels(), visible=False)
   plt.subplots_adjust(left=None, bottom=None, right=None, top=None,
                    wspace=0, hspace=0)
-  plt.savefig('../plots/%s/cata/offsets1_10_new_inter_half_fine.png'%name, dpi=190)
+  plt.savefig('../plots/%s/cata/offsets1_10_new_inter_half_fine.pdf'%name, dpi=190)
+  plt.clf()
+  '''
+  plt.plot(offsets[:,0], '.b')
+  plt.ylabel('RA')
+  plt.savefig('../plots/%s/cata/offsets1_10_new_inter_half_fine_ra.pdf'%name, dpi=190)
+  plt.clf()
+  plt.plot(offsets[:,1], '.b')
+  plt.ylabel('DEC')
+  plt.savefig('../plots/%s/cata/offsets1_10_new_inter_half_fine_dec.pdf'%name, dpi=190)
   plt.clf()
 
   co_data = hdulist[1].data
@@ -132,7 +141,6 @@ def secondary_cal(name):
   print 'asp caled'
 
 if __name__ == '__main__':
-  
   if False:
     name = 'AIS_GAL_SCAN_00257_0001'
     interpolate_offsets(name)
@@ -154,7 +162,11 @@ if __name__ == '__main__':
     for i in range(asp_file.shape[0]):
       row = asp_file[i,:]
       time = int(row[0]*1000)
-
+      '''
+      if time/1000. > t0+1351:
+        print 'break'
+        break
+      '''
       asp_file[i,:] = cal_photon_r(offsets, initial, time, row, step)
 
     np.save('../data/photon_list/%s_asp_cal.npy'%name, asp_file)

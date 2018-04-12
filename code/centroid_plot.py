@@ -59,8 +59,8 @@ def get_centers(initial, final):
 def get_centers_half(initial, final):
 	centers = []
 	for i in range(initial, final+1):
-		for j in range(2):
-			filename = '../fits/co/half/co_map%d_%d_zoom_nocal_half.fits'%(i,j)
+		for j in range(10):
+			filename = '../fits/test/co_map%d_%d_10.fits'%(i,j)
 			centroid = find_centroid(filename)
 			centers.append(centroid)
 	centers = np.array(centers)
@@ -80,7 +80,7 @@ def corr_plot(filename, title):
 	fig.set_title(title)
 	basename = os.path.basename(filename)
 	preffix, ext = os.path.splitext(basename)
-	fig.save('../plots/corr_half/%s.png'%preffix)
+	fig.save('../plots/corr_10/%s.png'%preffix)
 
 if __name__ == '__main__':
 	if False:
@@ -108,27 +108,48 @@ if __name__ == '__main__':
 			corr_plot(filename, 'corr between %ds and %ds'%(i,i+1))
 
 	if False:
-		initial = 300
-		final = 899
+		initial = 500
+		final = 510
 		centers = get_centers_half(initial, final)
 
-		trange = np.arange((final-initial+1)*2)/2.+initial
+		trange = np.arange((final-initial+1)*10)/10.+initial-0.5
 		np.save('../data/offsets300-899_half_r.npy', centers)
 		
-		plt.plot(trange, centers[:,0],'-b')
+		plt.plot(trange, centers[:,0],'.b')
 		plt.xlabel('time/s')
 		plt.ylabel('RA/degree')
 		plt.savefig('../plots/ra%d_%d_half_new.png'%(initial,final),dpi=190)
 		plt.clf()
-		plt.plot(trange, centers[:,1],'-b')
+		plt.plot(trange, centers[:,1],'.b')
 		plt.xlabel('time/s')
 		plt.ylabel('DEC/degree')
 		plt.savefig('../plots/dec%d_%d_half_new.png'%(initial,final),dpi=190)
 		
-	if True:
-		initial = 300
-		final = 899
+	if False:
+		initial = 500
+		final = 510
 		for i in range(initial, final+1):
-			for j in range(1,2):
-				filename = '../fits/co/half/co_map%d_%d_zoom_nocal_half.fits'%(i,j)
-				corr_plot(filename, 'corr between %.1fs and %.1fs'%(i+0.5*(j-1),i+0.5*j))
+			for j in range(10):
+				filename = '../fits/test/co_map%d_%d_10.fits'%(i,j)
+				corr_plot(filename, 'corr between %.1fs and %.1fs'%(i+0.1*j-0.5,i+0.1*(j+1)-0.5))
+
+	if True:
+		initial = 500
+		final = 510
+
+		trange = np.arange((final-initial+1)*10)/10.+initial-0.5
+		centers = np.load('../data/offsets300-899_half_r.npy')
+
+		for i in range(1, 110):
+			centers[i] = centers[i]+centers[i-1]
+		
+		plt.clf()
+		plt.plot(trange, centers[:,0],'.b')
+		plt.xlabel('time/s')
+		plt.ylabel('RA/degree')
+		plt.savefig('../plots/ra%d_%d_half_cul.png'%(initial,final),dpi=190)
+		plt.clf()
+		plt.plot(trange, centers[:,1],'.b')
+		plt.xlabel('time/s')
+		plt.ylabel('DEC/degree')
+		plt.savefig('../plots/dec%d_%d_half_cul.png'%(initial,final),dpi=190)
