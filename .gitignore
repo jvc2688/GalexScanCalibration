@@ -7,6 +7,7 @@
 *.out
 *.sh
 *.pbs
+*.pdf
 TSW*
 data/
 fits/
