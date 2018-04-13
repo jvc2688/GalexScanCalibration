@@ -244,9 +244,11 @@ Similarly Fig.~\ref{distortion_q} shows the distortion-map constructed with phot
 
 \section{Sensitivity map}
 \label{sm}
-Due to the observation strategy in \scanmode, each source samples a cord across the entire detector. 
-%If a chunk of photons are stacked on the detector, the number of photons on the detector can be visualized as Fig.~\ref{photons}, which contains not only signatures from stars passing across the detector, but also the features of sensitivity-map.
-If every star is assumed to be constant in brightness, the counts of photons in pixel $(x,y)$ of star $i$, $C_{i,x,y}$ can be modelled as:
+To precisely construct the intensity map, the effective exposure time needs to be measured. 
+Since the response function of the detector is not uniform, the sensitivity map is required to scale the effective exposure time of the image.
+The original pipeline sensitivity map is not appropriate 
+Thanks to the observation strategy in \scanmode, each source samples a cord across the entire detector. 
+If every star is assumed to be constant in brightness, the count of photons in pixel $(x,y)$ from star $i$, $C_{i,x,y}$ can be modelled as:
 \begin{eqnarray}
 C_{i,x,y} &=& I_{i}f_{x,y}T_{i,x,y}
 \end{eqnarray}
@@ -259,6 +261,9 @@ Starting from the original pipeline sensitivity map $f_{x,y}^{0}$, the sensitivi
 I_{i}^{n} &=& \frac{\sum_{x,y}C_{i,x,y}}{\sum_{x,y} f_{x,y}^{n} T_{i,x,y}} \\
 f_{x,y}^{n+1} &=& \frac{\sum_{i}C_{i,x,y}}{\sum_{i} I_{i}^{n} T_{i,x,y}}
 \end{eqnarray}
+
+Fig.~\ref{flat} shows the comparison between the pipeline sensitivity map and the measured sensitivity map.
+T
 
 \begin{figure}[p]
 \begin{center}
