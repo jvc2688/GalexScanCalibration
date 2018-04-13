@@ -246,13 +246,14 @@ Similarly Fig.~\ref{distortion_q} shows the distortion-map constructed with phot
 \label{sm}
 To precisely construct the intensity map, the effective exposure time needs to be measured. 
 Since the response function of the detector is not uniform, the sensitivity map is required to scale the effective exposure time for different pixels.
-The original pipeline sensitivity map is not appropriate to be used in the calibration
+The original pipeline sensitivity map is not appropriate to be used in the calibration due to the following reasons:
 \begin{enumerate}
-\item The 
+\item The pipeline sensitivity map was constructed using ground measurements of the system throughput, which may not capture the finer details of the instrument response.
+\item The \cause\ observation was conducted in the very late stage of the mission, so the response of detector could have changed during the telescope lifetime.
 \item In this paper, the photons with $Q<=5$ are cut as described in section \ref{data}. 
 However the photon Q value distribution over the detector is not uniform.
 Fig.~\ref{qcut} shows the ratio of the remaining photons after the cut.
-There are more photons cut around the edge than in the center of the detector, which changed the effective response 
+There are more photons cut around the edge than in the center of the detector, which changed the effective response correspondingly.
 \end{enumerate}
 
 Thanks to the observation strategy in \scanmode, each source samples a cord across the entire detector. 
