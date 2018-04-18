@@ -272,7 +272,13 @@ f_{x,y}^{n+1} &=& \frac{\sum_{i}C_{i,x,y}}{\sum_{i} I_{i}^{n} T_{i,x,y}}
 \end{eqnarray}
 
 Fig.~\ref{flat} shows the comparison between the pipeline sensitivity map and the measured sensitivity map.
-T
+The measured sensitivity map reproduced some of the bad spots in the original map, while has an overall lower response on the edge, which is due to the cut of the photon list.
+
+However, the 
+The relative sensitivity of pixels will also vary as a function of the photon countrate. 
+Therefore to better calibrate the 
+\ref{flat-profile} shows the profile plots of the sensitivity map
+
 
 \begin{figure}[p]
 \begin{center}
@@ -292,7 +298,7 @@ T
 \end{center}
 \caption{
   \label{flat}
-  Comparison between measured and pipeline sensitivity map.
+  Comparison between pipeline and measured sensitivity map.
   \emph{Left:} Pipeline sensitivity map;
   \emph{Right:} The converged sensitivity map.
   The measured sensitivity map reproduced some of the bad spots in the original map, while has an overall lower response on the edge, which is due to the cut of the photon list.
@@ -305,7 +311,7 @@ T
 \includegraphics[width=0.48\textwidth]{figures/profile_y}
 \end{center}
 \caption{
-  \label{flat-field}
+  \label{flat-profile}
   \emph{Left:} Profile plots of sensitivity maps in x direction;
   \emph{Right:} Profile plots of sensitivity maps in y direction.
   6 sensitivty maps are constructed by photons from regions with different photon countrate, which are compared with the pipeline sensitivity map.
