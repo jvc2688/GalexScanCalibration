@@ -99,10 +99,10 @@ The details of these value can be found in \cite{galex_cal}
 
 Fig.~\ref{meta} shows the overall offsets of photon positions as a function of $Q$, $X_A$ and $Y_A$.
 The offsets are measured by the cross-correlation of photons and star catalog, which will be explained in Section \ref{pc}.
-The overall offsets are quite significant for the photons with $Q<=5$ or $Y_A<2$.
+The overall offsets are significant for the photons with $Q<=5$ or $Y_A<2$.
 In order to avoid contamination from these photons, the photon list is cut to remove all these photons.
 The horizontal red lines indicate the cutting threshold.
-In addition, offset correction as function of $Q$ and $Y_A$ is also applied to the remaining photons, where the correction ($Q$, $Y_A$) is measured by the median of the 
+In addition, offset correction as function of $Q$ and $Y_A$ is also applied to the remaining photons, where the correction is measured by the median offset of the photons with ($Q$, $Y_A$).
 
 \begin{figure}[p]
 \begin{center}
@@ -274,10 +274,10 @@ f_{x,y}^{n+1} &=& \frac{\sum_{i}C_{i,x,y}}{\sum_{i} I_{i}^{n} T_{i,x,y}}
 Fig.~\ref{flat} shows the comparison between the pipeline sensitivity map and the measured sensitivity map.
 The measured sensitivity map reproduced some of the bad spots in the original map, while has an overall lower response on the edge, which is due to the cut of the photon list.
 
-However, the 
-The relative sensitivity of pixels will also vary as a function of the photon countrate. 
-Therefore to better calibrate the 
-\ref{flat-profile} shows the profile plots of the sensitivity map
+However, the
+The relative sensitivity of pixels will also vary as a function of the photon countrate.
+Therefore to better calibrate the effective exposure of the image.
+\ref{flat-profile} shows the profile plots of the sensitivity maps constructed by photons from regions with different photon countrates.
 
 
 \begin{figure}[p]
@@ -374,7 +374,7 @@ The structure of Galactic Plane varies dramatically in different wavelength.
 \begin{center}
 \includegraphics[width=0.49\textwidth]{figures/cocoon}
 \includegraphics[width=0.49\textwidth]{figures/FlamingStar}
-\includegraphics[width=0.49\textwidth]{figures/Vela}
+\includegraphics[width=0.49\textwidth]{figures/vela}
 \includegraphics[width=0.49\textwidth]{figures/cygnusloop}
 \end{center}
 \caption{
@@ -432,10 +432,11 @@ improvements:
 \begin{enumerate}
 \item apply q and ya correction instead of cutting the photon list
 \item measure different sensitivity maps for stars and background.
+\item apply the calibration to the All-sky survey data
 \end{enumerate}
 
-In this paper the photons with $Q<=5$ or $Y_A<2$ are removed.
-
+In this paper the photons with $Q<=5$ or $Y_A<2$ are removed to avoid contamination from these highly biased photons.
+However, instead of removing these photons, it is possible to correct 
 
 \clearpage
 \bibliography{gs}
