@@ -3,6 +3,7 @@
 *.pyc
 *.aux
 *.blg
+*.bbl
 *.log
 *.out
 *.sh

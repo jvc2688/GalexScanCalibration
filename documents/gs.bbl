@@ -1,0 +1,28 @@
+\begin{thebibliography}{}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[{{H{\o}g} {et~al.}(2000){H{\o}g}, {Fabricius}, {Makarov}, {Urban},
+  {Corbin}, {Wycoff}, {Bastian}, {Schwekendiek}, \& {Wicenec}}]{tycho2}
+{H{\o}g}, E., {Fabricius}, C., {Makarov}, V.~V., {et~al.} 2000, \aap, 355, L27
+
+\bibitem[{{Martin} {et~al.}(2005){Martin}, {Fanson}, {Schiminovich},
+  {Morrissey}, {Friedman}, {Barlow}, {Conrow}, {Grange}, {Jelinsky},
+  {Milliard}, {Siegmund}, {Bianchi}, {Byun}, {Donas}, {Forster}, {Heckman},
+  {Lee}, {Madore}, {Malina}, {Neff}, {Rich}, {Small}, {Surber}, {Szalay},
+  {Welsh}, \& {Wyder}}]{galex1}
+{Martin}, D.~C., {Fanson}, J., {Schiminovich}, D., {et~al.} 2005, \apjl, 619,
+  L1
+
+\bibitem[{{Million} {et~al.}(2016){Million}, {Fleming}, {Shiao}, {Loyd},
+  {Seibert}, \& {Smith}}]{gPhoton_code}
+{Million}, C.~C., {Fleming}, S.~W., {Shiao}, B., {et~al.} 2016, {gPhoton:
+  Time-tagged GALEX photon events analysis tools}, Astrophysics Source Code
+  Library, ascl:1603.004
+
+\bibitem[{{Morrissey} {et~al.}(2007){Morrissey}, {Conrow}, {Barlow}, {Small},
+  {Seibert}, {Wyder}, {Budav{\'a}ri}, {Arnouts}, {Friedman}, {Forster},
+  {Martin}, {Neff}, {Schiminovich}, {Bianchi}, {Donas}, {Heckman}, {Lee},
+  {Madore}, {Milliard}, {Rich}, {Szalay}, {Welsh}, \& {Yi}}]{galex_cal}
+{Morrissey}, P., {Conrow}, T., {Barlow}, T.~A., {et~al.} 2007, \apjs, 173, 682
+
+\end{thebibliography}
