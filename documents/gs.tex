@@ -45,14 +45,14 @@
 
 \begin{abstract}
 The Galaxy Evolution Explorer (\galex) is a space-based survey investigating the causes and evolution of star formation in galaxies in ultraviolet. 
-It images the sky in FUV(135-178 nm) and NUV(177-283 nm) bands simultaneously with a pair of photon-counting detectors, which output a photon list that contains tens of billions of photon events tagged with time, position and other housekeeping information.
-In this paper, we construct a new pipeline to self-calibrate the pointing,  distortion map and sensitivity map of the spacecraft by using all the photons and their housekeeping data.
+It images the sky in a NUV(177-283 nm) band with a photon-counting detector, which outputs a photon list that contains hundreds of billions of photon events tagged with time, position and other housekeeping information.
+In this paper, we construct a new pipeline to self-calibrate the pointing,  distortion map, and sensitivity map of the spacecraft by using all the photons and their housekeeping data.
 The pointing and distortion map are calibrated by a non-parametric approach, in which photons are cross-correlated with star catalogs.
-The sensitivity map is measured by assuming the stars fluxes are constant over time at least on average.
+The sensitivity map is measured by assuming star fluxes are constant over time at least on average.
 The calibration is applied to the \scanmode\ data, which were taken during the \cause\ phase.
-In contrast to the original bore-sight dither, the telescope traverses around the Galactic plane rapidly, which makes it more challenging to achieve high precision calibration of the data. 
+In this phase, in contrast to the original bore-sight dither, the telescope traverses around the Galactic plane rapidly, which makes it more challenging to achieve high precision calibration of the data. 
 The self-calibration pipeline in this paper generates high-quality sky maps in near UV (185-300 nm) band around the Galactic plane.
-We present these maps, and also calibration data for the spacecraft.
+We present maps of the Galaxy and also calibration data for the spacecraft.
 
 \end{abstract}
 
@@ -112,12 +112,12 @@ In addition, offset correction as function of $Q$ and $Y_A$ is also applied to t
 \end{center}
 \caption{%
   \label{telescope}
-  An example shows how the \galex\ telescope pointing and rotation change during one scan.
-  The telescope traversed the Galactic plane twice during one scan and maitain the pointting in gl nearly unchanged.
-  There are 450 scans similar to this have been observed during the \scanmode. 
-  \emph{Top:}  Pointting in gb as a function of time;
-  \emph{Middle:} Pointting in gl as a function of time;
-  \emph{Bottom:} Rotation changes as a function of time.
+  An example shows how the \galex\ telescope pointing and roll change during one scan.
+  The telescope traversed the Galactic plane twice during one scan and maintain the pointing in $gl$ nearly unchanged.
+  There are 450 scans similar to this observed during the \scanmode. 
+  \emph{Top:}  Pointting in $gb$ as a function of time;
+  \emph{Middle:} Pointting in $gl$ as a function of time;
+  \emph{Bottom:} Roll changes as a function of time.
 }
 \end{figure}
 
