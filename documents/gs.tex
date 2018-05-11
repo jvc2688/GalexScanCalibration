@@ -274,11 +274,15 @@ f_{x,y}^{n+1} &=& \frac{\sum_{i}C_{i,x,y}}{\sum_{i} I_{i}^{n} T_{i,x,y}}
 Fig.~\ref{flat} shows the comparison between the pipeline sensitivity map and the measured sensitivity map.
 The measured sensitivity map reproduced some of the bad spots in the original map, while has an overall lower response on the edge, which is due to the cut of the photon list.
 
-However, the
-The relative sensitivity of pixels will also vary as a function of the photon countrate.
-Therefore to better calibrate the effective exposure of the image.
+However, the relative sensitivity of pixels will also vary as a function of the overall photon countrate.
+Fig.~\ref{countrate} compares the photometry from the \cause\ data (this paper) and the \asc\ in regions with different overall intensity.
+The detail of the photometry will be discussed in the catalog paper (Mohammed et al., in prep).
+The photometry in regions with moderate countrate (second row) agrees well with the \asc, since most stars used to measure the sensitivity map resides in these regions.
+In comparison, photometry in regions with low or high overall intensity (first and third row) consists consistent systematics that in low countrate region, the photometry is overestimated in the edge, while in high countrate region, it is underestimated in the edge.
+These systematics is probably caused by the various photon Q value distribution over the detector when exposed to different countrate regions.
+Therefore to better calibrate the effective exposure of the image, the sensitivity map should be measured as a function of the photon countrate.
 Fig.~\ref{flat-profile} shows the profile plots of the sensitivity maps constructed by photons from regions with different photon countrates.
-
+The difference of the sensitivity maps account for the systematics shown in Fig.~\ref{countrate}.
 
 \begin{figure}[p]
 \begin{center}
@@ -316,9 +320,11 @@ Fig.~\ref{flat-profile} shows the profile plots of the sensitivity maps construc
 \end{center}
 \caption{
   \label{countrate}
-  Magnitude difference of matched sources between the \cause\ data (this paper) and the \asc as a function of radial distance from the detector center. 
+  Magnitude difference of matched sources between the \cause\ data (this paper) and the \asc\ as a function of radial distance from the detector center. 
   The red line shows the median difference.
   These six plots show the relation in regions of the sky with different overall intensity.
+  The photometry in regions with moderate countrate (second row) agrees well with the \asc.
+  In comparison, in low countrate region (first row), the photometry is overestimated in the edge of the detector, while in high countrate region (third row), the photometry is underestimated in the edge.
 }
 \end{figure}
 
