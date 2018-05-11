@@ -277,7 +277,7 @@ The measured sensitivity map reproduced some of the bad spots in the original ma
 However, the
 The relative sensitivity of pixels will also vary as a function of the photon countrate.
 Therefore to better calibrate the effective exposure of the image.
-\ref{flat-profile} shows the profile plots of the sensitivity maps constructed by photons from regions with different photon countrates.
+Fig.~\ref{flat-profile} shows the profile plots of the sensitivity maps constructed by photons from regions with different photon countrates.
 
 
 \begin{figure}[p]
@@ -302,6 +302,23 @@ Therefore to better calibrate the effective exposure of the image.
   \emph{Left:} Pipeline sensitivity map;
   \emph{Right:} The converged sensitivity map.
   The measured sensitivity map reproduced some of the bad spots in the original map, while has an overall lower response on the edge, which is due to the cut of the photon list.
+}
+\end{figure}
+
+\begin{figure}[p]
+\begin{center}
+\includegraphics[width=0.48\textwidth]{figures/cr1}
+\includegraphics[width=0.48\textwidth]{figures/cr2}
+\includegraphics[width=0.48\textwidth]{figures/cr3}
+\includegraphics[width=0.48\textwidth]{figures/cr4}
+\includegraphics[width=0.48\textwidth]{figures/cr5}
+\includegraphics[width=0.48\textwidth]{figures/cr6}
+\end{center}
+\caption{
+  \label{countrate}
+  Magnitude difference of matched sources between the \cause\ data (this paper) and the \asc as a function of radial distance from the detector center. 
+  The red line shows the median difference.
+  These six plots show the relation in regions of the sky with different overall intensity.
 }
 \end{figure}
 
@@ -440,8 +457,9 @@ There are around 70 percent photons remained after the cut.
 However, instead of removing these photons, it is possible to measure the average offset of photons as a function of $(Q, Y_A)$ and correct the offset.
 
 Although the sensitivity map measured in this paper 
+The sensitivity map is different from the stars and the background
 
-All the calibrations described in this paper can be 
+All the calibrations described in this paper can be also applied to the 
 
 \clearpage
 \bibliography{gs}
