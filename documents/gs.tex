@@ -45,25 +45,26 @@
 
 \begin{abstract}
 The Galaxy Evolution Explorer (\galex) is a space-based survey investigating the causes and evolution of star formation in galaxies in ultraviolet. 
-It images the sky in a NUV(177-283 nm) band with a photon-counting detector, which outputs a photon list that contains hundreds of billions of photon events tagged with time, position and other housekeeping information.
+It images the sky in NUV (177-283 nm) and FUV (135-178 nm) band with a photon-counting detector, which outputs a photon list that contains trillions of photon events tagged with time, position and other housekeeping information.
 In this paper, we construct a new pipeline to self-calibrate the pointing,  distortion map, and sensitivity map of the spacecraft by using all the photons and their housekeeping data.
 The pointing and distortion map are calibrated by a non-parametric approach, in which photons are cross-correlated with star catalogs.
 The sensitivity map is measured by assuming star fluxes are constant over time at least on average.
 The calibration is applied to the \scanmode\ data, which were taken during the \cause\ phase.
-In this phase, in contrast to the original bore-sight dither, the telescope traverses around the Galactic plane rapidly, which makes it more challenging to achieve high precision calibration of the data. 
+In this phase, in contrast to the original bore-sight dither, the telescope traverses around the Galactic plane rapidly. 
+It is more challenging to achieve high precision calibration, since the count rates are higher; there are saturated bright stars complicating aspect refinement; the rapid scan rate may result in increased rate errors.
 The self-calibration pipeline in this paper generates high-quality sky maps in near UV (185-300 nm) band around the Galactic plane.
 We present maps of the Galaxy and also calibration data for the spacecraft.
 
 \end{abstract}
 
 \section{Introduction}
-The Galaxy Evolution Explorer (\galex, \cite{galex1}) is a space-based survey investigating the causes and evolution of star formation in galaxies in ultraviolet. 
-It images the sky in FUV(135-178 nm) and NUV(177-283 nm) bands simultaneously with a pair of photon-counting detectors, which output a photon list that contains tens of billions of photon events tagged with time, position and other housekeeping information.
+The Galaxy Evolution Explorer (\galex, \citealt{galex1}) is a space-based survey investigating the causes and evolution of star formation in galaxies in ultraviolet. 
+It images the sky in FUV(135-178 nm) and NUV(177-283 nm) bands simultaneously with a pair of photon-counting detectors, which output a photon list that contains trillions of photon events tagged with time, position and other housekeeping information.
 
-While \galex\ has observed most of the sky in the main mission, the coverage of the Milky Way Galactic Plane has been limited by countrate limits set to protect the detector.
+While \galex\ has observed most of the sky in the main mission, the coverage of the Milky Way Galactic Plane was avoided due to countrate limits set to protect the detector.
 Therefore during the \cause\ phase after the main mission, by raising the countrate limits, the detector is able to image the Galactic Plane and fill the unobserved parts in NUV.
-However, in order to avoid saturation and protect the detector, the telescope is operated in the \scanmode, in which the telescope traverses around the Galactic Plane rapidly.
-Since both the observation strategy and the countrate during the \cause\ phase are very different from the main mission, the original pipleline is no longer optimized for the new data.
+However, in order to avoid saturation and protect the detector, the telescope is operated in the \scanmode, in which the telescope traverses through the Galactic Plane rapidly.
+Since both the observation strategy and the countrate during the \cause\ phase are very different from the main mission, the original pipleline is not optimized for the new data.
 In this paper, we construct a new pipeline to self-calibrate the pointing, distortion map and sensitivity map of the spacecraft by using all the photons and their housekeeping data.
 
 This paper is organized as follows. 
@@ -77,21 +78,22 @@ Finally, we discuss in Section \ref{ds}.
 The \galex\ data were collected by the photon counting detector, which recorded the raw detector position, time stamp and metadata used to correct photon positions for every photon event.
 Along with the raw photon events data (-raw6), the telescope also recorded the spacecraft state file (-scst) that contains spacecraft and instrument housekeeping values as a function of time and the aspect file (-asprta), which includes spacecraft pointing solution after refinement using bright stars in GALEX field of view.
 Fig.~\ref{telescope} shows the telescope pointing solution from the pipeline calibration during one scan.
-The telescope traversed the Galactic plane back and forth from $gb=-10$ to $gb=10$ and tried to maintain the pointing unchanged in Galactic longitude.
-The detector rotation in Equatorial coordinate was intended for keeping it unchanged in Galactic coordinate.
-The telescope pointing changes more than 1 arcmin per second in Galactic longitude, which make it very challenging to measure the pointing accurately.
+The telescope traversed the Galactic plane back and forth from $gb=-10$ to $gb=10$ and was commanded to follow great circle paths of constant Galactic longitude.
+The detector roll in Equatorial coordinate was intended to keep the position angle of the detector axes fixed in Galactic coordinates (i.e. with respect to lines of Galactic longitude) during the scan.
+The telescope pointing changes more than 1 arcmin per second in Galactic latitude, which make it very challenging to measure the pointing to the $<1"$ pointing accuracy requirement typical of the primary mission.
 
-In order to convert the raw photon events data into usable format, the \project{gPhoton}\footnote{Codebase: \url{https://github.com/cmillion/gPhoton} } \citep[][]{gPhoton_code} is required.
-The \project{gPipeline} module in \project{gPhoton} implements a subset of the steps from the original mission pipeline\citep{galex_cal}, which includes detector-level calibration and aspect correction of photon events.
+In order to convert the raw photon events data into usable format, the \project{gPhoton}\footnote{Codebase: \url{https://github.com/cmillion/gPhoton} } \citep[][]{gPhoton_code} is utilized.
+The \project{gPipeline} module in \project{gPhoton} implements a subset of the steps from the original mission pipeline \citep{galex_cal}, which includes detector-level calibration and aspect correction of photon events.
 In detector-level calibration, it performs the Centering and scaling, Wiggle, Walk, Spatial nonlinearity (distortion) correction and Hotspot masking steps that described in \cite{galex_cal}, which converts the raw positions to the actual source position in the focal plane.
 In the aspect correction step, the \project{gPipeline} projects the corrected photon events positions on the sky by using the spacecraft pointing solution.
-After these two steps of calibration, \project{gPhoton} returns a “photon list file” in CSV format, where each row corresponds to a photon event and records information including time, raw and calibrated detector event positions, sky projected photon event positions, and several values ($Q$, $X_A$, $Y_A$) that describe the electronic state of the detector.
+After these two steps of calibration, \project{gPhoton} returns a “photon list file” in CSV format, where each row corresponds to a photon event and records information including time, raw and calibrated detector event positions, sky projected photon event positions ($\alpha$, $\delta$), and several values ($Q$, $X_A$, $Y_A$) that describe the electronic parameters associated with each photon event.
+However, \project{gPipeline} does not perform any attitude refinement (as was done in the standard \galex\ pipeline), and the original pipeline solutions did not yield sufficiently accurate results for the \project{Galactic Plane Survey}, which is one reason we needed to add this functionality in this paper.
 
 According to \cite{galex_cal}, the photon position on \galex\ detector was measured by the arrival time difference of pulses from either side of the delay line anode, while the time difference consists of an integer number of coarse clock step and a fine position (phase of the coarse clock).
 The fine position is measured as voltage value by time-to-amplitude converter (TAC).
-Due to the electronic nonlinearity of TAC, each photon event can have a small local error in position and this effect is recorded as $X_A$ value in the photon list.
+Due to the electronic nonlinearity of TAC, each photon event can have a small local error in position with respect to the clock phase, which is recorded as $X_A$ value in the photon list.
 In addition to the nonlinearity of TAC, the variations in gain also affect the position of the photon events.
-The gain effect is recorded as pulse height $Q$ in the photon list.
+The photomultiplication factor for each event, which is drawn from a position- and count-rate dependent pulse height distribution, is recorded as $Q$.
 $Q$ is the pulse height of the photon event.
 $X_A$ is the wiggle (the phase of the TAC)
 $Y_A$ is the stim spread slope.
@@ -142,14 +144,14 @@ In addition, offset correction as function of $Q$ and $Y_A$ is also applied to t
 As mentioned in Section \ref{data}, the \galex\ photons are tagged with time, position on the detector and other housekeeping information($Q$, $X_A$ and $Y_A$).
 To use these photons such as constructing sky-maps, the pointing of the spacecraft is required as an input of the 
 \project{gPhoton} to project the photons onto the sky.
-Due to the nontrivial dithering pattern of \galex, the pointing recorded on the flight is not perfect, especially in the \scanmode, in which the spacecraft traversed the galactic plane rapidly. 
-In this paper, we are going to use the photons together with the stars catalog to calibrate the pointing of the spacecraft.
+Due to the control and knowledge errors of \galex, the pointing recorded on the flight is not perfect, especially in the \scanmode, in which the spacecraft traversed the galactic plane rapidly. 
+In this paper, as was done in the main \galex\ pipeline, we are going to use the photons together with the stars catalog to calibrate the pointing of the spacecraft and refine the attitude solution.
 The top plot in Fig.~\ref{slice} shows an one-second snapshot of the photons on the sky.
 The stars from Tycho 2 catalog \citep{tycho2} in the same region are also plotted. 
 It is obvious that there is an significant overall offset between the stars (cross-hair) and photons (points),  which is due to the imperfection of the pointing.To characterize the offsets of the pointing of the spacecraft, the cross-correlation of photons and star catalog are calculated.
 The cross-correlation $\xi(\vec{r})$ is defined as the count of photon-star pairs as a function of displacement $\vec{r}$.
-As shown in the bottom plot of Fig.~\ref{slice}, the offsets of the pointing are determined by the centroid of the cross-correlation function. 
-The shape of the correlation function is determined by the point spreading function (PSF).
+As shown in the bottom plot of Fig.~\ref{slice}, the offsets of the pointing are determined by the centroid of the cross-correlation function.
+Because the position errors in the star catalog are small, much less than 1", the shape of the correlation function is dominated by the \galex\ point spread function (PSF).
 There is also a secondary peak in the cross-correlation function due to the photons with $Y_A<2$, which has been explained in Section \ref{data} and can be removed by cutting the photon list.
 After photons are binned in one-second slots, the offsets of pointing can be measured as a function of time as shown in Fig.~\ref{pointing}.
 By utilizing the cross-correlation between photons and stars, we can figure out pointing using stars, but without ever actually running any kind of star detector in the raw data. 
@@ -165,8 +167,9 @@ The point is that we avoid any choices about how stars are detected.
   Cross-correlation of photons and star catalog.
   \emph{Top:}  An one-second snapshot of the photons on the sky. The points are the location of the photons. The crosses indicate the location of the stars from the input catalog. It is obvious that there is a small offset between photons and the stars.
   \emph{Bottom:} The cross-correlation of photons and stars. 
-  Each black points in the plot shows the offset between a pair of photon and star. 
-  The white cross indicates the centroid of the cross-correlation fucntion, which is the overall offsets between photons and stars---the offset of the pointing.
+  Each black points in the plot shows the offset between a pair of photon and star.
+  The distribution of balck points corresponds to the "reconstructed" PSF in this iteration. 
+  The white cross indicates the centroid of the the black points, which is the overall offsets between photons and stars---the offset of the pointing.
   }
 \end{figure}
 
@@ -180,7 +183,7 @@ The point is that we avoid any choices about how stars are detected.
   Pointing offsets as a function of time.
   \emph{Top:}  Pointing offsets in RA as a function of time.
   \emph{Bottom:} Pointing offsets in Dec as a function of time.
-  The dramtical changes around 800s is due to the spacecraft turning over in the middle of the scan. 
+  The dramtical changes around 800s is due to the reversal of the spacecraft scan rate when the boresight position reaches $gb=-10 deg$, designed to occur at a time near the center of the orbital eclipse.
   }
 \end{figure}
 
@@ -189,17 +192,17 @@ The point is that we avoid any choices about how stars are detected.
 Except for the overall offset due to the pointing, there is also local error in photon position caused by the detector. 
 According to \cite{galex_cal}, the photon position on \galex\ detector was measured by the arrival time difference of pulses from either side of the delay line anode, while the time difference consists of an integer number of coarse clock step and a fine position (phase of the coarse clock).
 The fine position is measured as voltage value by time-to-amplitude converter (TAC).
-Due to the electronic nonlinearity of TAC, each photon event can have a small local error in position and this effect is recorded as $X_A$ value in the photon list.
+Due to the electronic nonlinearity of TAC, each photon event can have a small local error in position and this effect is recorded as a function of $X_A$ value in the photon list.
 In addition to the nonlinearity of TAC, the variations in gain also affect the position of the photon events.
 The gain effect is recorded as pulse height $Q$ in the photon list.
 To calibrate these local effects on the detector, in this paper, a distortion map is constructed by a similar method in Section \ref{pc}.  
-The detector is divided into 50 by 50 pixels. 
-Within each pixel, the stars are projected onto the detector with the pointing measured in section \ref{pc}.
+The detector is divided into 50 by 50 grid pixels. 
+Within each grid pixel, the stars are projected onto the detector with the pointing measured in section \ref{pc}.
 Then the photons and stars are cross-correlated and the centroid of the correlation function is measured as the distortion in that pixel location.
 In Fig.~\ref{distortion_xa}, the photons are binned into three subset by the $X_A$ value and the distortion-map of each subset photons is constructed.
-The amplitude of the distortion is about 0.03 pixels, which is approximately few arcsec on the sky.
+The amplitude of the distortion is about 0.03 grid pixels, which is approximately around $\sim 2"$ on the sky.
 There is significant difference between distortion-map constructed with different subset of photons.
-The difference shows a periodic pattern over the detector, which is expected to account for the phases of the coarse clock.   
+The difference shows a periodic pattern over the detector, a significant component of which appears to be correlated with the phases of the coarse clock ($X_A$)
 Similarly Fig.~\ref{distortion_q} shows the distortion-map constructed with photons of different $Q$ values.
 
 \begin{figure}[p]
