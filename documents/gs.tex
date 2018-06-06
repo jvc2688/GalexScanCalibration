@@ -279,12 +279,12 @@ f_{x,y}^{n+1} &=& \frac{\sum_{i}C_{i,x,y}}{\sum_{i} I_{i}^{n} T_{i,x,y}}
 Fig.~\ref{flat} shows the comparison between the pipeline sensitivity map and the measured sensitivity map.
 The measured sensitivity map reproduced some of the bad spots in the original map, while has an overall lower response on the edge, which is due to the cut of the photon list.
 
-However, the relative sensitivity of pixels will also vary as a function of the overall photon countrate.
+However, the relative sensitivity of pixels will also vary as a function of the overall local photon countrate.
 Fig.~\ref{countrate} compares the photometry from the \cause\ data (this paper) and the \asc\ in regions with different overall intensity.
 The detail of the photometry will be discussed in the catalog paper (Mohammed et al., in prep).
-The photometry in regions with moderate countrate (second row) agrees well with the \asc, since most stars used to measure the sensitivity map resides in these regions.
+The photometry in regions with moderate countrate (second row) agrees well with the \asc, since most stars used to measure the sensitivity map reside in these regions.
 In comparison, photometry in regions with low or high overall intensity (first and third row) consists consistent systematics that in low countrate region, the photometry is overestimated in the edge, while in high countrate region, it is underestimated in the edge.
-These systematics is probably caused by the various photon Q value distribution over the detector when exposed to different countrate regions.
+These systematics are probably caused by the various photon Q value distribution over the detector when exposed to different countrate regions.
 Therefore to better calibrate the effective exposure of the image, the sensitivity map should be measured as a function of the photon countrate.
 Fig.~\ref{flat-profile} shows the profile plots of the sensitivity maps constructed by photons from regions with different photon countrates.
 The difference of the sensitivity maps account for the systematics shown in Fig.~\ref{countrate}.
@@ -456,6 +456,15 @@ The structure of Galactic Plane varies dramatically in different wavelength.
 
 \section{Discussion}
 \label{ds}
+
+In this paper, we have presented a calibration pipeline for the \cause\ data.
+The point of the cross-correlation is that we can figure out pointing using stars, but without ever actually running any kind of star detector in the raw data. 
+The point is we avoid any choices about how stars are detected.
+
+To calibrate the sensitivity map, the 
+However as 
+
+
 improvements:
 \begin{enumerate}
 \item apply q and ya correction instead of cutting the photon list
@@ -471,6 +480,13 @@ Although the sensitivity map measured in this paper
 The sensitivity map is different from the stars and the background
 
 All the calibrations described in this paper can be also applied to the 
+
+
+\acknowledgements
+\galex (Galaxy Evolution Explorer) is a NASA Small Explorer, launched in 2003 April.
+This work is based on data from the Tycho 2 catalog (\url{https://www.cosmos.esa.int/web/hipparcos/tycho-2}).
+This research made use of Astropy, a community-developed core Python package for Astronomy \citep{astropy}.
+The data analysis presented in this article was partially performed on computational resources at NYU HPC.
 
 \clearpage
 \bibliography{gs}
