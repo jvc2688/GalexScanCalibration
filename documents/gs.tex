@@ -207,10 +207,10 @@ Similarly Fig.~\ref{distortion_q} shows the distortion-map constructed with phot
 
 \begin{figure}[p]
 \begin{center}
-\includegraphics[width=0.95\textwidth]{figures/xa-x}
-\includegraphics[width=0.6\textwidth]{figures/dif-xa-x}
-\includegraphics[width=0.95\textwidth]{figures/xa-y}
-\includegraphics[width=0.6\textwidth]{figures/dif-xa-y}
+\includegraphics[width=0.95\textwidth]{figures/xa-x-new}
+\includegraphics[width=0.6\textwidth]{figures/dif-xa-x-new}
+\includegraphics[width=0.95\textwidth]{figures/xa-y-new}
+\includegraphics[width=0.6\textwidth]{figures/dif-xa-y-new}
 
 \end{center}
 \caption{%
@@ -228,10 +228,10 @@ Similarly Fig.~\ref{distortion_q} shows the distortion-map constructed with phot
 
 \begin{figure}[p]
 \begin{center}
-\includegraphics[width=0.95\textwidth]{figures/q-x}
-\includegraphics[width=0.6\textwidth]{figures/dif-q-x}
-\includegraphics[width=0.95\textwidth]{figures/q-y}
-\includegraphics[width=0.6\textwidth]{figures/dif-q-y}
+\includegraphics[width=0.95\textwidth]{figures/q-x-new}
+\includegraphics[width=0.6\textwidth]{figures/dif-q-x-new}
+\includegraphics[width=0.95\textwidth]{figures/q-y-new}
+\includegraphics[width=0.6\textwidth]{figures/dif-q-y-new}
 
 \end{center}
 \caption{%
@@ -317,12 +317,12 @@ The difference of the sensitivity maps account for the systematics shown in Fig.
 
 \begin{figure}[p]
 \begin{center}
-\includegraphics[width=0.48\textwidth]{figures/cr1}
-\includegraphics[width=0.48\textwidth]{figures/cr2}
-\includegraphics[width=0.48\textwidth]{figures/cr3}
-\includegraphics[width=0.48\textwidth]{figures/cr4}
-\includegraphics[width=0.48\textwidth]{figures/cr5}
-\includegraphics[width=0.48\textwidth]{figures/cr6}
+\includegraphics[width=0.48\textwidth]{figures/cr1-new}
+\includegraphics[width=0.48\textwidth]{figures/cr2-new}
+\includegraphics[width=0.48\textwidth]{figures/cr3-new}
+\includegraphics[width=0.48\textwidth]{figures/cr4-new}
+\includegraphics[width=0.48\textwidth]{figures/cr5-new}
+\includegraphics[width=0.48\textwidth]{figures/cr6-new}
 \end{center}
 \caption{
   \label{countrate}
@@ -336,8 +336,8 @@ The difference of the sensitivity maps account for the systematics shown in Fig.
 
 \begin{figure}[p]
 \begin{center}
-\includegraphics[width=0.48\textwidth]{figures/profile_x}
-\includegraphics[width=0.48\textwidth]{figures/profile_y}
+\includegraphics[width=0.48\textwidth]{figures/profile_x-new}
+\includegraphics[width=0.48\textwidth]{figures/profile_y-new}
 \end{center}
 \caption{
   \label{flat-profile}
@@ -357,7 +357,7 @@ To scale the effect of relative exposure time, the exposure map is constructed a
 Exp(X,Y) &=& \int^{t}f(X(t), Y(t))(1-dead(t))(1-cut(t))dt
 \end{eqnarray}
 where $f(X(t), Y(t))$ is the sensitivity map measured in Section \ref{sm} and shifted to align with the image.
-$dead(t)$ is the electronic dead time of the detector.
+$dead(t)$ is the electronic dead time of the detector, which is from the spacecraft state file (-scst).
 $cut(t)$ is the fraction of the photons that have been cut by $Q$ and $Y_A$ described in Section \ref{data}.
 With the count maps and exposure maps, the intensity map is defined as the ratio of them.
 Fig.~\ref{flowchart} shows the flowchart of our pipeline.
@@ -458,30 +458,32 @@ The structure of Galactic Plane varies dramatically in different wavelength.
 \section{Discussion}
 \label{ds}
 
-In this paper, we have presented a calibration pipeline for the \cause\ data.
-The point of the cross-correlation is that we can figure out pointing using stars, but without ever actually running any kind of star detector in the raw data. 
-The point is we avoid any choices about how stars are detected.
+In this paper, we have presented a calibration pipeline for the \cause\ data, which performed both high precision astrometric and photometric calibration for this dataset for the first time.
+The spacecraft attitude solution is measured by cross-correlating the photons and stars.
+The point of the cross-correlation is that we can figure out the spacecraft pointing using stars, but without ever actually running any kind of star detector in the raw data.
+The only assumption underlying is that most of the object in the field are nearly point sources.
+This avoided any choices about how stars are detected.
+It is important especially when the field is crowded (which is true in the Galactic Plane), since source detection and centroid measurement is hard in such field.
+However the disadvantage is that by directly using the star catalog, the astrometric calibration precision is limited by the precision of the catalog itself.
+One possible improvement is to decouple the relative astrometric calibration from the absolute calibration.
+That is to cross-correlate photons within different time slots to first measure the relative attitude solution and then use the star catalog to calibrate the overall absolute pointing in the sky.
+By doing this it might be possible to achieve higher precision and maintain the same overall accuracy for the astrometry.
 
-To calibrate the sensitivity map, the 
-However as 
+To calibrate the sensitivity map, a self-calibration approach similar to \cite{uber} is adopted, in which the relative sensitivity is measured by assuming that stars are constant over time and the repeated observations of the same stars are utilized. 
+The speciality in this paper is that the sensitivity map in different count rate condition is constructed independently to account for the large dynamic range of count rate in this dataset.
+However as all relative calibration approach, the absolute scale of the sensitivity map can not be determined without any external information.
+For the \cause\ data, the overall photometric zero point can be determined by matching the stars with the original \galex\ catalog and let them agree with each other.
+This will be discussed in detail in the catalog paper (Mohammed et al., in prep).
 
-
-improvements:
-\begin{enumerate}
-\item apply q and ya correction instead of cutting the photon list
-\item measure different sensitivity maps for stars and background.
-\item apply the calibration to the All-sky survey data
-\end{enumerate}
-
-In this paper the photons with $Q<=5$ or $Y_A<2$ are removed to avoid contamination from these highly biased photons.
+In this paper the photons with $Q<=5$ or $Y_A<2$ are removed to avoid contamination from these highly biased photons as described in \ref{data}.
 There are around 70 percent photons remained after the cut.
-However, instead of removing these photons, it is possible to measure the average offset of photons as a function of $(Q, Y_A)$ and correct the offset.
+However, as shown in Fig.~\ref{meta}, the overall offsets of photons with $Q<5$ is not totally randomly distributed.
+Therefore, instead of removing these photons, it is possible to measure the average offset of photons as a function of $Q$ and correct the offset.
+If this correction could be achieved, there will be additional 30 percent photons available, which could increase the signal to noise of the imaging data by significant amount.
 
-Although the sensitivity map measured in this paper 
-The sensitivity map is different from the stars and the background
-
-All the calibrations described in this paper can be also applied to the 
-
+In conclusion, despite all these potential improvements mentioned above, the high precision calibration of NUV imaging data for the Galactic Plane is available for the first time using \galex. 
+Research like \cite{redclump} has already shown that the UV-optical color is an unique probe of physical properties for red clump stars.
+We expect that by calibrating and making the \cause\ data available, it could make plenty of research opportunities possible in Galactic astronomy.
 
 \acknowledgements
 \galex (Galaxy Evolution Explorer) is a NASA Small Explorer, launched in 2003 April.
