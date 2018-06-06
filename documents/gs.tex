@@ -119,7 +119,7 @@ In addition, offset correction as function of $Q$ and $Y_A$ is also applied to t
   There are 450 scans similar to this observed during the \scanmode. 
   \emph{Top:}  Pointting in $gb$ as a function of time;
   \emph{Middle:} Pointting in $gl$ as a function of time;
-  \emph{Bottom:} Roll changes as a function of time.
+  \emph{Bottom:} Roll in Equatorial coordinates changes as a function of time.
 }
 \end{figure}
 
@@ -255,7 +255,8 @@ The original pipeline sensitivity map is not appropriate to be used in the calib
 \begin{enumerate}
 \item The pipeline sensitivity map was constructed using ground measurements of the system throughput, which may not capture the finer details of the instrument response.
 \item The \cause\ observation was conducted in the very late stage of the mission, so the response of detector could have changed during the telescope lifetime.
-\item In this paper, the photons with $Q<=5$ are cut as described in section \ref{data}. 
+\item The Galactic Plane data used in this paper were observed in high count rate/high background regions of the sky.  
+Therefore the additional cuts (photons with $Q<=5$) described in section \ref{data} is required to avoid certain effects from the high count rate. 
 However the photon Q value distribution over the detector is not uniform.
 Fig.~\ref{qcut} shows the ratio of the remaining photons after the cut.
 There are more photons cut around the edge than in the center of the detector, which changed the effective response correspondingly.
