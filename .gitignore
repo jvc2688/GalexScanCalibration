@@ -1,6 +1,7 @@
 *.fits
 *.csv
 *.pyc
+*.npy
 *.aux
 *.blg
 *.bbl
