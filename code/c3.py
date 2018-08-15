@@ -58,12 +58,38 @@ def MAD(a, axis=None):
     #calculated the median average deviation
     return np.median(np.abs(a - a_median), axis=axis)/0.6745
 
-def find_centroid(data):
-  source = extract(data , 0)
+def find_centroid(data, t):
+  '''
+  filter_kernel = makeGaussian(17, 5. , 0 , np.array([8.5,8.5]))
+  source = extract(data , t, filter_kernel=filter_kernel)
+  '''
+  #t=20
+  #source = extract(data , t)
+  #source = extract(data, 100)
+  #source = extract(data, t)
+  #source = extract(data, 500)
+  source = extract(data, t)
+
   a = source['a']
   b = source['b']
-  fwhm = np.sqrt(np.max(a)*np.max(b))
-  print fwhm
+  #print 'a: {0}'.format(a)
+  #print 'b: {0}'.format(b)
+  flux = source['cflux']
+  #arg = np.argsort(flux)[-1]
+  try:
+    arg = np.argsort(flux)[-1]
+  except IndexError:
+    return None
+  #print flux
+
+  x = source['x'][arg]
+  y = source['y'][arg]
+  try:
+    #fwhm = np.sqrt(np.max(a)*np.max(b))
+    fwhm = np.sqrt(a[arg]*b[arg])
+    print 'fwhm:{0}'.format(fwhm)
+  except ValueError:
+    return None
   size = data.shape[0]
   zero = size/2 + .5
   kernel = makeGaussian(17, fwhm , 0 , np.array([8.5,8.5]))
@@ -75,7 +101,31 @@ def find_centroid(data):
       ox, oy = fit_3x3(img[xi-1:xi+2, yi-1:yi+2])
   else:
       ox , oy = 0. , 0.
-  return xi + ox + .5 , yi + oy + .5, max_value
+  if (np.absolute(ox) >3) or (np.absolute(oy)>3):
+      ox, oy = 0., 0.
+  #return xi + ox + .5 , yi + oy + .5, max_value, flux[arg[-1]]
+  print xi,yi, ox, oy
+  return xi + ox + .5 , yi + oy + .5, max_value, flux[arg]
+
+def find_source(data, t):
+  source = extract(data , t)
+  a = source['a']
+  b = source['b']
+  x = source['x']
+  y = source['y']
+  flux = source['flux']
+  print x
+  print y
+  print flux
+  arg = np.argsort(flux)
+  print x[arg[-1]], y[arg[-1]], flux[arg[-1]]
+  try:
+    fwhm = np.sqrt(np.max(a)*np.max(b))
+    print fwhm
+  except ValueError:
+    return None
+
+  return x[arg[-1]], y[arg[-1]], flux[arg[-1]]
 
 
 if __name__ == "__main__":

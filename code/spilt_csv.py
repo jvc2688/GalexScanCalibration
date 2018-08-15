@@ -14,19 +14,22 @@ def load_obj(name ):
 if __name__ == '__main__':
 	csvname = sys.argv[1]
 
-	output = "../data/%s/split/%s.csv"%(csvname, csvname)
+	output = "/beegfs/dw1519/galex/data/%s/split/lookup.pkl"%(csvname)
 	dir = os.path.dirname(output)
+	if not os.path.isfile(output):
+		pass
+	else:
+		exit()
 	if not os.path.exists(dir):
 		os.makedirs(dir)
 	else:
 		print 'exists'
-		exit()
 	look_up = {}
 	i=0
-	with open('../data/photon_list/%s.csv'%csvname, 'rb') as f:
-		reader = csv.reader(f)
+	with open('/scratch/dw1519/galex/data/photon_list/%s.csv'%csvname, 'rb') as f:
+		reader = csv.reader(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		filename = '%d.csv'%i
-		w = open('../data/%s/split/'%csvname+filename, 'wb')
+		w = open('/beegfs/dw1519/galex/data/%s/split/'%csvname+filename, 'wb')
 		writer = csv.writer(w)
 		row = reader.next()
 		writer.writerow(row)
@@ -39,12 +42,13 @@ if __name__ == '__main__':
 				filename = '%d.csv'%i
 				last = time
 				w.close()
-				w = open('../data/%s/split/'%csvname+filename, 'wb')
+				w = open('/beegfs/dw1519/galex/data/%s/split/'%csvname+filename, 'wb')
 				writer = csv.writer(w)
 				print time, filename
 			writer.writerow(row)
 			look_up[row[0]] = i
-	save_obj(look_up, '../data/%s/split/lookup'%csvname)
+	save_obj(look_up, '/beegfs/dw1519/galex/data/%s/split/lookup'%csvname)
+	os.remove('/scratch/dw1519/galex/data/photon_list/%s.csv'%csvname)
 
 
 

@@ -1,0 +1,15 @@
+CHANGES.rst
+LICENSE
+MANIFEST.in
+README.rst
+setup.py
+fast_histogram/__init__.py
+fast_histogram/_histogram_core.c
+fast_histogram/histogram.py
+fast_histogram.egg-info/PKG-INFO
+fast_histogram.egg-info/SOURCES.txt
+fast_histogram.egg-info/dependency_links.txt
+fast_histogram.egg-info/requires.txt
+fast_histogram.egg-info/top_level.txt
+fast_histogram/tests/__init__.py
+fast_histogram/tests/test_histogram.py
