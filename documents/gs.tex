@@ -362,9 +362,17 @@ $cut(t)$ is the fraction of the photons that have been cut by $Q$ and $Y_A$ desc
 With the count maps and exposure maps, the intensity map is defined as the ratio of them.
 Fig.~\ref{flowchart} shows the flowchart of our pipeline.
 
-The full resolution (2 arcsec per pixel) maps are constructed   as $1 \times 2$ deg tiles with 1 deg overlap on each side of the image.
+The full resolution (2 arcsec per pixel) maps are constructed as $1 \times 2$ deg tiles with 1 deg overlap on each side of the image.
 Then the maps are projected into low resolution (nside=2048) \project{Healpix} map.
 Fig.~\ref{map0} shows the full Galactic plane divided into 4 equal-sized slices.
+From top to bottom, the ranges of Galactic longitude are: 90-180 deg, 0-90 deg, 270-360 deg and 180-270 deg, while the ranges of Galactic latitude are all from -10 to 10 deg.
+These maps are all in logarithmic color-scales. 
+In each image, there are a few blank areas, which correspond to areas that the telescope avoided during the observation to protect the instrument.
+In the top map ($gl$: 90-180 deg), the \cause\ data cover 89.5\% of the sky.
+In the second image ($gl$: 0-90 deg), the coverage is less, which only covers 66.8\% of the sky due to a large blank area in $gl$: 51-66 deg.
+The third map ($gl$: 270-360 deg) covers 78.1\% of the sky with large blank areas around $gl: 348-358 deg$.
+The bottom map ($gl$: 180-270) has a relatively complete coverage: 82.8\%, while most the blank areas are around $gl$: 180-200 deg.
+
 In Fig.~\ref{map1}, we also present zoom-in images in four interesting regions where Nebula structures reside.
 To qualitatively illustrate the calibration performance in image level, Fig.~\ref{map2} shows the side-by-side comparison between the images generated from the original pipeline calibration and the calibration from this paper.
 There are doubling artefact of individual sources and image-level smearing in the original pipeline images (left), which is caused by the imperfect aspect solution.
@@ -408,10 +416,10 @@ The structure of Galactic Plane varies dramatically in different wavelength.
 \end{center}
 \caption{
   \label{map1}
-   \emph{Top-left:}  the Cocoon Nebula;
-   \emph{Top-right:} the Flaming Star Nebula;
-   \emph{Bottom-left:} the Vela Supernova Remnant;
-   \emph{Bottom-right:} the Cygnus Loop Nebula.
+   \emph{Top-left:}  the Cocoon Nebula, the image is in a 50' by 50' box, centered at $gl$=94.39 deg, $gb$=-5.51 deg;
+   \emph{Top-right:} the Flaming Star Nebula, the image is in a 50' by 50' box, centered at $gl$=172.08 deg, $gb$=-2.21 deg;
+   \emph{Bottom-left:} the Vela Supernova Remnant, the image is in a 50' by 50' box, centered at $gl$=262.33 deg, $gb$=-2.34 deg;
+   \emph{Bottom-right:} the Cygnus Loop supernova remnant, the image is in a 4.5 deg by 4.5 deg box, centered at $gl$=74.99 deg, $gb$=-8.33 deg.
 }
 \end{figure}
 
