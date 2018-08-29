@@ -1,4 +1,4 @@
-\documentclass[12pt, preprint]{aastex}
+\documentclass[12pt, preprint]{aastex61}
 
 \usepackage{subfigure}
 \usepackage{color}
@@ -17,7 +17,7 @@
 
 \graphicspath{{figures/}}
 
-\bibliographystyle{apj}
+\bibliographystyle{aas}
 \definecolor{linkcolor}{rgb}{0,0,0.5}
 \hypersetup{colorlinks=true,linkcolor=linkcolor,citecolor=linkcolor,filecolor=linkcolor,urlcolor=linkcolor}
 
@@ -148,7 +148,8 @@ Due to the control and knowledge errors of \galex, the pointing recorded on the 
 In this paper, as was done in the main \galex\ pipeline, we are going to use the photons together with the stars catalog to calibrate the pointing of the spacecraft and refine the attitude solution.
 The top plot in Fig.~\ref{slice} shows an one-second snapshot of the photons on the sky.
 The stars from Tycho 2 catalog \citep{tycho2} in the same region are also plotted. 
-It is obvious that there is an significant overall offset between the stars (cross-hair) and photons (points),  which is due to the imperfection of the pointing.To characterize the offsets of the pointing of the spacecraft, the cross-correlation of photons and star catalog are calculated.
+It is obvious that there is an significant overall offset between the stars (cross-hair) and photons (points),  which is due to the imperfection of the pointing.
+To characterize the offsets of the pointing of the spacecraft, the cross-correlation of photons and star catalog are calculated.
 The cross-correlation $\xi(\vec{r})$ is defined as the count of photon-star pairs as a function of displacement $\vec{r}$.
 As shown in the bottom plot of Fig.~\ref{slice}, the offsets of the pointing are determined by the centroid of the cross-correlation function.
 Because the position errors in the star catalog are small, much less than 1", the shape of the correlation function is dominated by the \galex\ point spread function (PSF).
@@ -367,16 +368,22 @@ Then the maps are projected into low resolution (nside=2048) \project{Healpix} m
 Fig.~\ref{map0} shows the full Galactic plane divided into 4 equal-sized slices.
 From top to bottom, the ranges of Galactic longitude are: 90-180 deg, 0-90 deg, 270-360 deg and 180-270 deg, while the ranges of Galactic latitude are all from -10 to 10 deg.
 These maps are all in logarithmic color-scales. 
-In each image, there are a few blank areas, which correspond to areas that the telescope avoided during the observation to protect the instrument.
+In each image, there are a few blank areas.
+These regions were either not observed due to low priority and limited resource during the \cause, or the data were lost when the data recorder was failed because of limited data recorder volume.
 In the top map ($gl$: 90-180 deg), the \cause\ data cover 89.5\% of the sky.
 In the second image ($gl$: 0-90 deg), the coverage is less, which only covers 66.8\% of the sky due to a large blank area in $gl$: 51-66 deg.
 The third map ($gl$: 270-360 deg) covers 78.1\% of the sky with large blank areas around $gl: 348-358 deg$.
 The bottom map ($gl$: 180-270) has a relatively complete coverage: 82.8\%, while most the blank areas are around $gl$: 180-200 deg.
 
 In Fig.~\ref{map1}, we also present zoom-in images in four interesting regions where Nebula structures reside.
+Up-right plot shows the structure of Flaming Star Nebula in NUV. There is bright star at the bottom of the structure, which is a massive and intensely hot O-type star---AE Aurigae.
+In bottom-right, the plot shows Cygnus Loop supernova remnant in NUV. Most of the structure in the image are the filaments of gas and dust, which is spreading outward from the original explosion.
 To qualitatively illustrate the calibration performance in image level, Fig.~\ref{map2} shows the side-by-side comparison between the images generated from the original pipeline calibration and the calibration from this paper.
 There are doubling artefact of individual sources and image-level smearing in the original pipeline images (left), which is caused by the imperfect aspect solution.
 In comparison, there is no obvious artefact in the images from this paper.
+Fig.~\ref{map5} shows the astrometry of the calibrated data compared with Tycho 2 catalog.
+The plots illustrate that most of the sources are well-calibrated relative to the Tycho 2 catalog astrometrically.
+95\% of the sources are within 1 arcsec range relative to the Tycho 2 catalog.
 
 To illustrate the coverage of this data set, Fig.~\ref{map3} shows the all sky Mollweide projection NUV intensity map constructed from from the \asc\ data, the \msc\ data and the \cause\ data (this paper).
 The \cause\ data fill most of the sky around the Galactic Plane that have never been observed in the \galex\ main mission.
@@ -436,6 +443,18 @@ The structure of Galactic Plane varies dramatically in different wavelength.
   \emph{Left:} images from the orignal pipeline;
   \emph{Right}: images from our pipeline.
   The stars from Tycho 2 catalog are marked by the green circle.
+}
+\end{figure}
+
+\begin{figure}[p]
+\begin{center}
+\includegraphics[width=0.49\textwidth]{figures/astrometry}
+\includegraphics[width=0.49\textwidth]{figures/astrometry_gl}
+\includegraphics[width=0.49\textwidth]{figures/astrometry_gb}
+\end{center}
+\caption{
+  \label{map5}
+  The astrometry of calibrated \cause\ data compared with Tycho 2 catalog. 
 }
 \end{figure}
 
