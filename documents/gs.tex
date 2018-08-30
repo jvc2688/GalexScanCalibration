@@ -1,4 +1,4 @@
-\documentclass[12pt, preprint]{aastex61}
+\documentclass[12pt, preprint]{aastex}
 
 \usepackage{subfigure}
 \usepackage{color}
@@ -17,7 +17,7 @@
 
 \graphicspath{{figures/}}
 
-\bibliographystyle{aas}
+\bibliographystyle{apj}
 \definecolor{linkcolor}{rgb}{0,0,0.5}
 \hypersetup{colorlinks=true,linkcolor=linkcolor,citecolor=linkcolor,filecolor=linkcolor,urlcolor=linkcolor}
 
@@ -376,8 +376,10 @@ The third map ($gl$: 270-360 deg) covers 78.1\% of the sky with large blank area
 The bottom map ($gl$: 180-270) has a relatively complete coverage: 82.8\%, while most the blank areas are around $gl$: 180-200 deg.
 
 In Fig.~\ref{map1}, we also present zoom-in images in four interesting regions where Nebula structures reside.
-Up-right plot shows the structure of Flaming Star Nebula in NUV. There is bright star at the bottom of the structure, which is a massive and intensely hot O-type star---AE Aurigae.
-In bottom-right, the plot shows Cygnus Loop supernova remnant in NUV. Most of the structure in the image are the filaments of gas and dust, which is spreading outward from the original explosion.
+Up-right plot shows the structure of Flaming Star Nebula in NUV. There is a bright star at the bottom of the structure, which is a massive and intensely hot O-type star---AE Aurigae. 
+It's blue light is reflected by the nebula's filaments.
+In bottom-right, the plot shows Cygnus Loop supernova remnant in NUV.
+Most of the structures in the image are the filaments of gas and dust heated by the shockwave from the supernova, which is spreading outward from the original explosion.
 To qualitatively illustrate the calibration performance in image level, Fig.~\ref{map2} shows the side-by-side comparison between the images generated from the original pipeline calibration and the calibration from this paper.
 There are doubling artefact of individual sources and image-level smearing in the original pipeline images (left), which is caused by the imperfect aspect solution.
 In comparison, there is no obvious artefact in the images from this paper.
@@ -423,10 +425,10 @@ The structure of Galactic Plane varies dramatically in different wavelength.
 \end{center}
 \caption{
   \label{map1}
-   \emph{Top-left:}  the Cocoon Nebula, the image is in a 50' by 50' box, centered at $gl$=94.39 deg, $gb$=-5.51 deg;
-   \emph{Top-right:} the Flaming Star Nebula, the image is in a 50' by 50' box, centered at $gl$=172.08 deg, $gb$=-2.21 deg;
-   \emph{Bottom-left:} the Vela Supernova Remnant, the image is in a 50' by 50' box, centered at $gl$=262.33 deg, $gb$=-2.34 deg;
-   \emph{Bottom-right:} the Cygnus Loop supernova remnant, the image is in a 4.5 deg by 4.5 deg box, centered at $gl$=74.99 deg, $gb$=-8.33 deg.
+   \emph{Top-left:}  the Cocoon Nebula, the image is in a 50' by 50' box, centered at $(gl, gb)=(94.39, -5.51)\ deg$;
+   \emph{Top-right:} the Flaming Star Nebula, the image is in a 50' by 50' box, centered at $(gl, gb)=(172.08, -2.21)\ deg$;
+   \emph{Bottom-left:} the Vela Supernova Remnant, the image is in a 50' by 50' box, centered at $(gl, gb)=(262.33, -2.34)\ deg$;
+   \emph{Bottom-right:} the Cygnus Loop supernova remnant, the image is in a 4.5 deg by 4.5 deg box, centered at $(gl, gb)=(74.99, -8.33)\ deg$.
 }
 \end{figure}
 
@@ -448,13 +450,14 @@ The structure of Galactic Plane varies dramatically in different wavelength.
 
 \begin{figure}[p]
 \begin{center}
-\includegraphics[width=0.49\textwidth]{figures/astrometry}
 \includegraphics[width=0.49\textwidth]{figures/astrometry_gl}
 \includegraphics[width=0.49\textwidth]{figures/astrometry_gb}
+\includegraphics[width=0.49\textwidth]{figures/astrometry}
 \end{center}
 \caption{
   \label{map5}
   The astrometry of calibrated \cause\ data compared with Tycho 2 catalog. 
+  95\% of the soources are within 1 arcsec circle relative to the Tycho 2 catalog.
 }
 \end{figure}
 
